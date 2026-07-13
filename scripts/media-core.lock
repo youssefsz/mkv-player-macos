@@ -1,0 +1,68 @@
+# MediaCore source and binary lock file.
+#
+# This file is sourced by the scripts in this directory. Keep it to simple
+# variable assignments and arrays; never add commands. Source archive hashes
+# are SHA-256 values of the exact URLs below.
+
+MEDIA_CORE_LOCK_FORMAT=1
+MEDIA_CORE_MINIMUM_MACOS="14.0"
+MEDIA_CORE_COMPONENTS=(MPV FFMPEG FREETYPE FRIBIDI HARFBUZZ LIBASS)
+
+MPV_VERSION="0.41.0"
+MPV_URL="https://github.com/mpv-player/mpv/archive/refs/tags/v0.41.0.tar.gz"
+MPV_SHA256="ee21092a5ee427353392360929dc64645c54479aefdb5babc5cfbb5fad626209"
+MPV_ARCHIVE="mpv-0.41.0.tar.gz"
+MPV_DIRECTORY="mpv-0.41.0"
+
+FFMPEG_VERSION="8.1.2"
+FFMPEG_URL="https://ffmpeg.org/releases/ffmpeg-8.1.2.tar.xz"
+FFMPEG_SHA256="464beb5e7bf0c311e68b45ae2f04e9cc2af88851abb4082231742a74d97b524c"
+FFMPEG_ARCHIVE="ffmpeg-8.1.2.tar.xz"
+FFMPEG_DIRECTORY="ffmpeg-8.1.2"
+
+FREETYPE_VERSION="2.13.3"
+FREETYPE_URL="https://download.savannah.gnu.org/releases/freetype/freetype-2.13.3.tar.xz"
+FREETYPE_SHA256="0550350666d427c74daeb85d5ac7bb353acba5f76956395995311a9c6f063289"
+FREETYPE_ARCHIVE="freetype-2.13.3.tar.xz"
+FREETYPE_DIRECTORY="freetype-2.13.3"
+
+FRIBIDI_VERSION="1.0.16"
+FRIBIDI_URL="https://github.com/fribidi/fribidi/releases/download/v1.0.16/fribidi-1.0.16.tar.xz"
+FRIBIDI_SHA256="1b1cde5b235d40479e91be2f0e88a309e3214c8ab470ec8a2744d82a5a9ea05c"
+FRIBIDI_ARCHIVE="fribidi-1.0.16.tar.xz"
+FRIBIDI_DIRECTORY="fribidi-1.0.16"
+
+HARFBUZZ_VERSION="10.4.0"
+HARFBUZZ_URL="https://github.com/harfbuzz/harfbuzz/archive/refs/tags/10.4.0.tar.gz"
+HARFBUZZ_SHA256="0d25a3f74af4e8744700ac19050af5a80ae330378a5802a5cd71e523bb6fda1f"
+HARFBUZZ_ARCHIVE="harfbuzz-10.4.0.tar.gz"
+HARFBUZZ_DIRECTORY="harfbuzz-10.4.0"
+
+LIBASS_VERSION="0.17.4"
+LIBASS_URL="https://github.com/libass/libass/releases/download/0.17.4/libass-0.17.4.tar.xz"
+LIBASS_SHA256="78f1179b838d025e9c26e8fef33f8092f65611444ffa1bfc0cfac6a33511a05a"
+LIBASS_ARCHIVE="libass-0.17.4.tar.xz"
+LIBASS_DIRECTORY="libass-0.17.4"
+
+# libplacebo relies on pinned Git submodules for its generated OpenGL source,
+# so it is cloned rather than downloaded as GitHub's incomplete source archive.
+LIBPLACEBO_VERSION="7.351.0"
+LIBPLACEBO_GIT_URL="https://github.com/haasn/libplacebo.git"
+LIBPLACEBO_COMMIT="3188549fba13bbdf3a5a98de2a38c2e71f04e21e"
+LIBPLACEBO_GLAD_COMMIT="73db193f853e2ee079bf3ca8a64aa2eaf6459043"
+LIBPLACEBO_JINJA_COMMIT="15206881c006c79667fe5154fe80c01c65410679"
+LIBPLACEBO_MARKUPSAFE_COMMIT="28ace20b140d15c083e1cbc163ee6b7778ba098c"
+LIBPLACEBO_FAST_FLOAT_COMMIT="1bf70101536d37fa9954cc4f03fd0903d045a9f3"
+LIBPLACEBO_VULKAN_HEADERS_COMMIT="cacef3039d277c448c89336290ec3937270b0996"
+
+# Set these only after publishing a maintainer-built MediaCore artifact. The
+# bootstrap script deliberately fails closed while either value is empty.
+MEDIA_CORE_BINARY_URL=""
+MEDIA_CORE_BINARY_SHA256=""
+
+# Sparkle's release tools are used only by the tagged-release workflow to sign
+# the update enclosure and generate the appcast. The app dependency itself is
+# pinned independently by Swift Package Manager.
+SPARKLE_TOOLS_VERSION="2.9.2"
+SPARKLE_TOOLS_URL="https://github.com/sparkle-project/Sparkle/releases/download/2.9.2/Sparkle-2.9.2.tar.xz"
+SPARKLE_TOOLS_SHA256="1cb340cbbef04c6c0d162078610c25e2221031d794a3449d89f2f56f4df77c95"

@@ -1,0 +1,7 @@
+1
+00:00:00,200 --> 00:00:00,900
+Readable external and embedded subtitles
+
+2
+00:00:01,200 --> 00:00:02,100
+Unicode: مرحبا · こんにちは · café

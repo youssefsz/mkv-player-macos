@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repository-validation:
+    name: Repository validation
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Validate shell scripts and lock file
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/*.sh
+          source scripts/_media-core-common.sh
+          validate_lock_file
+
+      - name: Verify committed playback fixtures
+        working-directory: Tests/Fixtures/Generated
+        run: shasum -a 256 --check SHA256SUMS.txt
+
+      - name: Cache verified dependency downloads
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/Library/Caches/io.github.youssefsz.MKVPlayer/MediaCore
+          key: media-core-sources-${{ hashFiles('scripts/media-core.lock') }}
+
+      - name: Verify pinned dependency sources
+        run: scripts/verify-media-core-pins.sh
+
+  package-tests:
+    name: ${{ matrix.package }} tests
+    runs-on: macos-26
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - PlayerCore
+          - MPVKit
+    steps:
+      - name: Check out source
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Test Swift package
+        run: >-
+          swift test
+          --package-path "Packages/${{ matrix.package }}"
+          -Xswiftc -warnings-as-errors
+
+  app-tests:
+    name: App tests and universal build
+    runs-on: macos-26
+    timeout-minutes: 35
+    needs:
+      - repository-validation
+      - package-tests
+    steps:
+      - name: Check out source
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Regenerate the Xcode project
+        shell: bash
+        run: |
+          set -euo pipefail
+          gem install xcodeproj --version 1.27.0 --no-document
+          ruby tools/generate_project.rb
+
+      - name: Resolve exact package dependencies
+        run: |
+          set -euo pipefail
+          xcodebuild \
+            -project MKVPlayer.xcodeproj \
+            -scheme MKVPlayer \
+            -resolvePackageDependencies
+          git diff --exit-code -- \
+            MKVPlayer.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+
+      - name: Run app tests
+        run: |
+          xcodebuild \
+            -project MKVPlayer.xcodeproj \
+            -scheme MKVPlayer \
+            -configuration Debug \
+            -destination 'platform=macOS' \
+            -derivedDataPath "$RUNNER_TEMP/MKVPlayer-Test-DerivedData" \
+            -disableAutomaticPackageResolution \
+            CODE_SIGNING_ALLOWED=NO \
+            test
+
+      - name: Build both release architectures
+        run: |
+          set -euo pipefail
+          derived_data="$RUNNER_TEMP/MKVPlayer-Universal-DerivedData"
+          xcodebuild \
+            -project MKVPlayer.xcodeproj \
+            -scheme MKVPlayer \
+            -configuration Release \
+            -destination 'generic/platform=macOS' \
+            -derivedDataPath "$derived_data" \
+            ARCHS='arm64 x86_64' \
+            ONLY_ACTIVE_ARCH=NO \
+            -disableAutomaticPackageResolution \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+          lipo \
+            "$derived_data/Build/Products/Release/MKV Player.app/Contents/MacOS/MKV Player" \
+            -verify_arch arm64 x86_64

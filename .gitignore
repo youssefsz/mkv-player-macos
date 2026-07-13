@@ -1,0 +1,14 @@
+.DS_Store
+DerivedData*/
+.build/
+.swiftpm/
+xcuserdata/
+*.xcuserstate
+Vendor/MediaCore.xcframework
+Vendor/MediaCore.xcframework.zip
+Vendor/.media-core-version
+build/
+dist/
+*.dmg
+*.zip
+appcast.xml

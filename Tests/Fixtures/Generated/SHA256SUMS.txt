@@ -1,0 +1,6 @@
+018337ce3fb30930f14c28b5899fab12c038ffa2bbd2c9cb5f2c2f13df8c0d0b  ./external.ass
+c3981b71c16ed92eb8f7da2ac59bf919c178c20ccf8438365fb40681b7f6dacc  ./external.srt
+e19d72f343a9317cbfaa0c3ce00c9cd302597d546ce5639f5e3985ddbb81e48e  ./h264-aac.mp4
+ab4318edb4162a6382ebbdce4ed08417c686807efb8ed6d8e11a6f5efa5dbb83  ./malformed.mkv
+218f0ceea9008d03463817beb86b0d741210ad89d0a8847bca92fcbbab16f905  ./tracks-chapters-subtitles.mkv
+ce28fe63e2c1be73600996bbe42e3efa8db1c131d68c4345d84e26ac2fb3212b  ./truncated.mkv
