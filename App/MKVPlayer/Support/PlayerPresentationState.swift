@@ -67,6 +67,26 @@ struct PlayerPresentationState: Equatable, Sendable {
     var canSeek: Bool {
         canControlPlayback && isSeekable && duration.isFinite && duration > 0
     }
+
+    func seekTarget(by offset: TimeInterval) -> TimeInterval? {
+        guard canSeek, offset.isFinite, position.isFinite else { return nil }
+        return min(max(position + offset, 0), duration)
+    }
+}
+
+enum PlaybackRateOptions {
+    static let all: [Double] = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
+
+    static func label(for rate: Double) -> String {
+        var value = String(
+            format: "%.2f",
+            locale: Locale(identifier: "en_US_POSIX"),
+            rate
+        )
+        while value.last == "0" { value.removeLast() }
+        if value.last == "." { value.removeLast() }
+        return "\(value)×"
+    }
 }
 
 enum TimeText {

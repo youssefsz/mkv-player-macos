@@ -26,6 +26,8 @@ final class PlayerWindowController: NSWindowController {
     private var lastLoggedPhase: PlayerPresentationPhase = .idle
     private var recoverableCommandError: PlaybackError?
     private var operationGeneration: UInt64 = 0
+    private var selectedPlaybackRate: Double = 1
+    private var isTemporaryFastPlaybackActive = false
     private(set) var recentURLs: [URL] = []
     private(set) var presentationState = PlayerPresentationState()
 
@@ -187,6 +189,26 @@ final class PlayerWindowController: NSWindowController {
     }
 
     func setPlaybackRate(_ rate: Double) {
+        guard rate.isFinite, rate > 0 else { return }
+        selectedPlaybackRate = rate
+        renderCurrentState()
+        guard !isTemporaryFastPlaybackActive else { return }
+        perform { [session] in try await session.setRate(rate) }
+    }
+
+    private func beginTemporaryFastPlayback() {
+        guard presentationState.canControlPlayback,
+              !isTemporaryFastPlaybackActive else { return }
+        isTemporaryFastPlaybackActive = true
+        playerViewController.setTemporaryFastPlaybackActive(true)
+        perform { [session] in try await session.setRate(2) }
+    }
+
+    private func endTemporaryFastPlayback() {
+        guard isTemporaryFastPlaybackActive else { return }
+        isTemporaryFastPlaybackActive = false
+        playerViewController.setTemporaryFastPlaybackActive(false)
+        let rate = selectedPlaybackRate
         perform { [session] in try await session.setRate(rate) }
     }
 
@@ -246,6 +268,9 @@ final class PlayerWindowController: NSWindowController {
             displayedPosition: session.displayedPosition,
             error: session.lastError
         )
+        // The controls and app menu continue to show the user's persistent
+        // selection while Space temporarily overrides the engine rate.
+        state.rate = selectedPlaybackRate
         state.isFullScreen = window?.styleMask.contains(.fullScreen) == true
         if session.snapshot.phase != .failed, let recoverableCommandError {
             let message = [
@@ -373,7 +398,15 @@ extension PlayerWindowController: NSWindowDelegate {
 extension PlayerWindowController: PlayerWindowKeyboardDelegate {
     func playerWindowDidRequestControls() { playerViewController.showControls() }
     func playerWindowDidRequestTogglePlayback() { togglePlayback() }
-    func playerWindowDidRequestSeek(by offset: TimeInterval) { seek(by: offset) }
+    func playerWindowDidRequestSeek(by offset: TimeInterval) {
+        guard let target = presentationState.seekTarget(by: offset) else { return }
+        let appliedOffset = target - presentationState.position
+        guard appliedOffset != 0 else { return }
+        playerViewController.showKeyboardSeekFeedback(offset: appliedOffset)
+        perform { [session] in try await session.seek(to: target) }
+    }
+    func playerWindowDidBeginTemporaryFastPlayback() { beginTemporaryFastPlayback() }
+    func playerWindowDidEndTemporaryFastPlayback() { endTemporaryFastPlayback() }
 
     func playerWindowDidRequestEscape() {
         if window?.styleMask.contains(.fullScreen) == true { toggleFullScreen() }
@@ -394,6 +427,9 @@ extension PlayerWindowController: PlayerViewControllerDelegate {
     }
     func playerViewController(_ controller: PlayerViewController, didChangeVolume volume: Double) { setVolume(volume) }
     func playerViewControllerDidRequestToggleMute(_ controller: PlayerViewController) { toggleMute() }
+    func playerViewController(_ controller: PlayerViewController, didChangePlaybackRate rate: Double) {
+        setPlaybackRate(rate)
+    }
     func playerViewController(_ controller: PlayerViewController, didSelectAudioTrack id: Int64) { selectAudioTrack(id) }
     func playerViewController(_ controller: PlayerViewController, didSelectSubtitleTrack id: Int64?) { selectSubtitleTrack(id) }
     func playerViewController(_ controller: PlayerViewController, didSelectChapter index: Int) { selectChapter(index) }

@@ -127,6 +127,7 @@ end
 test_target.build_configurations.each do |config|
   settings = config.build_settings
   settings['GENERATE_INFOPLIST_FILE'] = 'YES'
+  settings['OTHER_LDFLAGS'] = '$(inherited) -framework AppIntents'
   settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'io.github.youssefsz.MKVPlayerTests'
   settings['SWIFT_ACTIVE_COMPILATION_CONDITIONS'] = \
     '$(inherited) $(MKVPLAYER_TEST_COMPILATION_CONDITION)'

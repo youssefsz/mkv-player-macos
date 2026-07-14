@@ -98,7 +98,7 @@ xcodebuild \
 | --- | --- |
 | Open video | Command-O |
 | Play or pause | Space |
-| Seek backward/forward 10 seconds | Left/Right Arrow |
+| Seek backward/forward 5 seconds | Left/Right Arrow |
 | Enter fullscreen | Control-Command-F |
 | Exit fullscreen | Escape |
 | Settings | Command-, |

@@ -12,6 +12,7 @@ protocol PlayerViewControllerDelegate: AnyObject {
     func playerViewControllerDidCommitScrubbing(_ controller: PlayerViewController)
     func playerViewController(_ controller: PlayerViewController, didChangeVolume volume: Double)
     func playerViewControllerDidRequestToggleMute(_ controller: PlayerViewController)
+    func playerViewController(_ controller: PlayerViewController, didChangePlaybackRate rate: Double)
     func playerViewController(_ controller: PlayerViewController, didSelectAudioTrack id: Int64)
     func playerViewController(_ controller: PlayerViewController, didSelectSubtitleTrack id: Int64?)
     func playerViewController(_ controller: PlayerViewController, didSelectChapter index: Int)
@@ -54,6 +55,14 @@ final class PlayerViewController: NSViewController {
 
     func showControls() {
         canvas.showControls(scheduleHide: true)
+    }
+
+    func setTemporaryFastPlaybackActive(_ isActive: Bool) {
+        canvas.setTemporaryFastPlaybackActive(isActive)
+    }
+
+    func showKeyboardSeekFeedback(offset: TimeInterval) {
+        canvas.showKeyboardSeekFeedback(offset: offset)
     }
 
     private func wireActions() {
@@ -105,6 +114,10 @@ final class PlayerViewController: NSViewController {
         canvas.controls.onToggleMute = { [weak self] in
             guard let self else { return }
             self.delegate?.playerViewControllerDidRequestToggleMute(self)
+        }
+        canvas.controls.onPlaybackRateChanged = { [weak self] rate in
+            guard let self else { return }
+            self.delegate?.playerViewController(self, didChangePlaybackRate: rate)
         }
         canvas.controls.onAudioTrackSelected = { [weak self] id in
             guard let self else { return }

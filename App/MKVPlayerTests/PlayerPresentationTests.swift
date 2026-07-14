@@ -95,6 +95,24 @@ final class PlayerPresentationTests: XCTestCase {
         XCTAssertFalse(state.canSeek)
     }
 
+    func testKeyboardSeekTargetsAreExactlyFiveSecondsAndClamped() {
+        var state = PlayerPresentationState(
+            phase: .playing,
+            fileURL: URL(fileURLWithPath: "/tmp/movie.mkv"),
+            position: 20,
+            duration: 22,
+            isSeekable: true
+        )
+
+        XCTAssertEqual(state.seekTarget(by: -5), 15)
+        XCTAssertEqual(state.seekTarget(by: 5), 22)
+
+        state.position = 3
+        XCTAssertEqual(state.seekTarget(by: -5), 0)
+        state.isSeekable = false
+        XCTAssertNil(state.seekTarget(by: 5))
+    }
+
     func testFailureIncludesSafeDiagnostics() {
         let error = PlaybackError(
             code: .corruptMedia,
@@ -163,6 +181,46 @@ final class PlayerPresentationTests: XCTestCase {
     }
 
     @MainActor
+    func testArrowKeysIgnoreSystemGeneratedFunctionModifiers() {
+        let systemArrowFlags: NSEvent.ModifierFlags = [.function, .numericPad]
+
+        XCTAssertTrue(PlayerWindow.playbackModifiers(from: systemArrowFlags).isEmpty)
+        XCTAssertEqual(PlayerWindow.playbackModifiers(from: systemArrowFlags.union(.shift)), .shift)
+    }
+
+    @MainActor
+    func testQuickSpacePressTogglesWithoutStartingTemporarySpeed() {
+        let shortcut = SpaceHoldShortcutController(holdDelay: 1)
+        var quickPresses = 0
+        var holds = 0
+        shortcut.onQuickPress = { quickPresses += 1 }
+        shortcut.onHoldBegan = { holds += 1 }
+
+        shortcut.keyDown()
+        shortcut.keyDown() // Simulates an auto-repeated keyDown event.
+        XCTAssertTrue(shortcut.keyUp())
+
+        XCTAssertEqual(quickPresses, 1)
+        XCTAssertEqual(holds, 0)
+    }
+
+    @MainActor
+    func testHoldingSpaceBeginsOnceAndEndsOnRelease() async throws {
+        let shortcut = SpaceHoldShortcutController(holdDelay: 0.01)
+        var transitions: [String] = []
+        shortcut.onQuickPress = { transitions.append("quick") }
+        shortcut.onHoldBegan = { transitions.append("begin") }
+        shortcut.onHoldEnded = { transitions.append("end") }
+
+        shortcut.keyDown()
+        shortcut.keyDown() // Auto-repeat must not restart the timer.
+        try await Task.sleep(for: .milliseconds(40))
+        XCTAssertTrue(shortcut.keyUp())
+
+        XCTAssertEqual(transitions, ["begin", "end"])
+    }
+
+    @MainActor
     func testTransportAvailabilityAndFullScreenLabelFollowPresentation() throws {
         let controls = PlaybackControlsView(frame: .zero)
         var state = PlayerPresentationState(
@@ -188,6 +246,48 @@ final class PlayerPresentationTests: XCTestCase {
         XCTAssertTrue(play.isEnabled)
         XCTAssertTrue(back.isEnabled)
         XCTAssertEqual(fullScreen.toolTip, "Exit Full Screen")
+    }
+
+    @MainActor
+    func testPlaybackSpeedSelectorOffersCommonRatesAndShowsSelection() throws {
+        let controls = PlaybackControlsView(frame: .zero)
+        let speed = try XCTUnwrap(descendants(of: controls, as: ActionPopUpButton.self).first {
+            $0.toolTip == "Playback Speed"
+        })
+        var selectedRate: Double?
+        controls.onPlaybackRateChanged = { selectedRate = $0 }
+
+        XCTAssertEqual(speed.itemTitles, ["0.5×", "0.75×", "1×", "1.25×", "1.5×", "1.75×", "2×"])
+
+        var state = PlayerPresentationState(
+            phase: .playing,
+            fileURL: URL(fileURLWithPath: "/tmp/movie.mkv"),
+            rate: 1.75
+        )
+        controls.render(state)
+        XCTAssertEqual(speed.titleOfSelectedItem, "1.75×")
+
+        speed.selectItem(at: 1)
+        _ = speed.sendAction(speed.action, to: speed.target)
+        XCTAssertEqual(selectedRate, 0.75)
+
+        state.phase = .loading
+        controls.render(state)
+        XCTAssertFalse(speed.isEnabled)
+    }
+
+    @MainActor
+    func testKeyboardFeedbackIndicatorsExposeTheirMessages() {
+        let canvas = PlayerCanvasView(frame: NSRect(x: 0, y: 0, width: 800, height: 500))
+
+        canvas.setTemporaryFastPlaybackActive(true)
+        canvas.showKeyboardSeekFeedback(offset: -5)
+
+        let visibleMessages = descendants(of: canvas, as: NSTextField.self)
+            .filter { !$0.isHidden }
+            .map(\.stringValue)
+        XCTAssertTrue(visibleMessages.contains("2×"))
+        XCTAssertTrue(visibleMessages.contains("−5s"))
     }
 
     @MainActor

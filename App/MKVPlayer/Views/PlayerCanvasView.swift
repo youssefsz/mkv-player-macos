@@ -16,9 +16,12 @@ final class PlayerCanvasView: NSView {
     private let emptyState = EmptyStateView(frame: .zero)
     private let errorState = ErrorStateView(frame: .zero)
     private let loadingIndicator = NSProgressIndicator(frame: .zero)
+    private let temporarySpeedIndicator = PlaybackFeedbackView()
+    private let seekIndicator = PlaybackFeedbackView()
     private var trackingArea: NSTrackingArea?
     private var hideControlsTimer: Timer?
     private var hideResumeTimer: Timer?
+    private var hideSeekIndicatorTimer: Timer?
     private var isScrubbing = false
     private var latestState = PlayerPresentationState()
 
@@ -53,6 +56,11 @@ final class PlayerCanvasView: NSView {
         loadingIndicator.isDisplayedWhenStopped = false
         addSubview(loadingIndicator)
 
+        temporarySpeedIndicator.isHidden = true
+        addSubview(temporarySpeedIndicator)
+        seekIndicator.isHidden = true
+        addSubview(seekIndicator)
+
         controls.alphaValue = 1
         controls.onScrubbingChanged = { [weak self] scrubbing in
             self?.isScrubbing = scrubbing
@@ -83,6 +91,12 @@ final class PlayerCanvasView: NSView {
 
             loadingIndicator.centerXAnchor.constraint(equalTo: centerXAnchor),
             loadingIndicator.centerYAnchor.constraint(equalTo: centerYAnchor),
+
+            temporarySpeedIndicator.centerXAnchor.constraint(equalTo: centerXAnchor),
+            temporarySpeedIndicator.topAnchor.constraint(equalTo: topAnchor, constant: 22),
+
+            seekIndicator.centerXAnchor.constraint(equalTo: centerXAnchor),
+            seekIndicator.centerYAnchor.constraint(equalTo: centerYAnchor),
 
             controls.centerXAnchor.constraint(equalTo: centerXAnchor),
             controls.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -18),
@@ -149,6 +163,8 @@ final class PlayerCanvasView: NSView {
         if !state.hasMedia {
             controls.isHidden = true
             controls.alphaValue = 1
+            setTemporaryFastPlaybackActive(false)
+            hideSeekIndicator()
         }
 
         switch state.phase {
@@ -224,6 +240,35 @@ final class PlayerCanvasView: NSView {
         resumeBanner.isHidden = true
     }
 
+    func setTemporaryFastPlaybackActive(_ isActive: Bool) {
+        if isActive {
+            temporarySpeedIndicator.present(text: "2×")
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion ? 0 : 0.1
+                temporarySpeedIndicator.animator().alphaValue = 1
+            }
+        } else {
+            temporarySpeedIndicator.isHidden = true
+            temporarySpeedIndicator.alphaValue = 0
+        }
+    }
+
+    func showKeyboardSeekFeedback(offset: TimeInterval) {
+        guard offset.isFinite, offset != 0 else { return }
+        let roundedMagnitude = Int(abs(offset).rounded())
+        let prefix = offset > 0 ? "+" : "−"
+        let message = "\(prefix)\(roundedMagnitude)s"
+        seekIndicator.present(text: message)
+        seekIndicator.alphaValue = 1
+
+        hideSeekIndicatorTimer?.invalidate()
+        let timer = Timer(timeInterval: 0.75, repeats: false) { [weak self] _ in
+            Task { @MainActor [weak self] in self?.hideSeekIndicator() }
+        }
+        hideSeekIndicatorTimer = timer
+        RunLoop.main.add(timer, forMode: .common)
+    }
+
     func showControls(scheduleHide: Bool) {
         guard latestState.hasMedia else { return }
         hideControlsTimer?.invalidate()
@@ -270,6 +315,21 @@ final class PlayerCanvasView: NSView {
         }
     }
 
+    private func hideSeekIndicator() {
+        hideSeekIndicatorTimer?.invalidate()
+        hideSeekIndicatorTimer = nil
+        guard !seekIndicator.isHidden else { return }
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion ? 0 : 0.16
+            seekIndicator.animator().alphaValue = 0
+        } completionHandler: { [weak self] in
+            Task { @MainActor [weak self] in
+                guard let self, self.seekIndicator.alphaValue == 0 else { return }
+                self.seekIndicator.isHidden = true
+            }
+        }
+    }
+
     private var controlsContainsFirstResponder: Bool {
         guard let firstResponder = window?.firstResponder as? NSView else { return false }
         return firstResponder === controls || firstResponder.isDescendant(of: controls)
@@ -298,6 +358,45 @@ final class PlayerCanvasView: NSView {
             return Self.videoExtensions.contains(ext)
                 || (latestState.canControlPlayback && Self.subtitleExtensions.contains(ext))
         }
+    }
+}
+
+private final class PlaybackFeedbackView: NSVisualEffectView {
+    private let textLabel = NSTextField(labelWithString: "")
+
+    init() {
+        super.init(frame: .zero)
+        material = .hudWindow
+        blendingMode = .withinWindow
+        state = .active
+        wantsLayer = true
+        layer?.cornerRadius = 8
+        translatesAutoresizingMaskIntoConstraints = false
+        setAccessibilityRole(.staticText)
+
+        textLabel.font = .monospacedDigitSystemFont(ofSize: 15, weight: .semibold)
+        textLabel.textColor = .labelColor
+        textLabel.alignment = .center
+        textLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(textLabel)
+
+        NSLayoutConstraint.activate([
+            textLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            textLabel.topAnchor.constraint(equalTo: topAnchor, constant: 7),
+            textLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -7),
+            widthAnchor.constraint(greaterThanOrEqualToConstant: 52)
+        ])
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func present(text: String) {
+        textLabel.stringValue = text
+        setAccessibilityLabel(text)
+        isHidden = false
     }
 }
 

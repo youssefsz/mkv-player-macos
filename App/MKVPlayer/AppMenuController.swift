@@ -129,8 +129,8 @@ final class AppMenuController: NSObject {
         menu.addItem(menuItem(title: "Chapters", submenu: chapterMenu))
 
         let speedMenu = NSMenu(title: "Playback Speed")
-        for rate in [0.5, 0.75, 1.0, 1.25, 1.5, 2.0] {
-            let label = rate == 1 ? "Normal" : "\(rate.formatted())×"
+        for rate in PlaybackRateOptions.all {
+            let label = PlaybackRateOptions.label(for: rate)
             let speedItem = item(label, #selector(AppDelegate.setPlaybackRate(_:)))
             speedItem.representedObject = rate
             speedMenu.addItem(speedItem)

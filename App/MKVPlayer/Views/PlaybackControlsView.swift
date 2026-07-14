@@ -7,6 +7,7 @@ final class PlaybackControlsView: NSVisualEffectView {
     var onSeekPreview: ((TimeInterval) -> Void)?
     var onScrubbingChanged: ((Bool) -> Void)?
     var onVolumeChanged: ((Double) -> Void)?
+    var onPlaybackRateChanged: ((Double) -> Void)?
     var onToggleMute: (() -> Void)?
     var onAudioTrackSelected: ((Int64) -> Void)?
     var onSubtitleTrackSelected: ((Int64?) -> Void)?
@@ -24,6 +25,7 @@ final class PlaybackControlsView: NSVisualEffectView {
     private let audioButton = ActionPopUpButton(frame: .zero, pullsDown: false)
     private let subtitleButton = ActionPopUpButton(frame: .zero, pullsDown: false)
     private let chapterButton = ActionPopUpButton(frame: .zero, pullsDown: false)
+    private let speedButton = ActionPopUpButton(frame: .zero, pullsDown: false)
     private let fullScreenButton = ActionButton(
         symbolName: "arrow.up.left.and.arrow.down.right",
         accessibilityLabel: "Enter Full Screen",
@@ -95,6 +97,7 @@ final class PlaybackControlsView: NSVisualEffectView {
             NSView(),
             muteButton,
             volumeSlider,
+            speedButton,
             fullScreenButton
         ])
         transport.orientation = .horizontal
@@ -169,6 +172,12 @@ final class PlaybackControlsView: NSVisualEffectView {
         chapterButton.isEnabled = newState.canControlPlayback && !newState.chapters.isEmpty
         audioButton.isEnabled = newState.canControlPlayback && !newState.audioTracks.isEmpty
         subtitleButton.isEnabled = newState.canControlPlayback && !newState.subtitleTracks.isEmpty
+        speedButton.isEnabled = newState.canControlPlayback
+        if let selectedRateIndex = PlaybackRateOptions.all.firstIndex(where: {
+            abs($0 - newState.rate) < 0.001
+        }) {
+            speedButton.selectItem(at: selectedRateIndex)
+        }
 
         if trackMenusChanged {
             rebuildTrackMenus(newState)
@@ -183,6 +192,11 @@ final class PlaybackControlsView: NSVisualEffectView {
         audioButton.setAccessibilityLabel("Audio Track")
         subtitleButton.toolTip = "Subtitles"
         subtitleButton.setAccessibilityLabel("Subtitles")
+        speedButton.toolTip = "Playback Speed"
+        speedButton.setAccessibilityLabel("Playback speed")
+        speedButton.addItems(withTitles: PlaybackRateOptions.all.map(PlaybackRateOptions.label))
+        speedButton.selectItem(at: PlaybackRateOptions.all.firstIndex(of: 1) ?? 0)
+        speedButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 58).isActive = true
 
         chapterButton.selectionHandler = { [weak self] index in
             guard let self, self.playbackState.chapters.indices.contains(index) else { return }
@@ -198,6 +212,10 @@ final class PlaybackControlsView: NSVisualEffectView {
             let trackIndex = index - 1
             guard self.playbackState.subtitleTracks.indices.contains(trackIndex) else { return }
             self.onSubtitleTrackSelected?(self.playbackState.subtitleTracks[trackIndex].id)
+        }
+        speedButton.selectionHandler = { [weak self] index in
+            guard PlaybackRateOptions.all.indices.contains(index) else { return }
+            self?.onPlaybackRateChanged?(PlaybackRateOptions.all[index])
         }
     }
 
