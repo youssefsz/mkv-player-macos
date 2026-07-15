@@ -107,8 +107,10 @@ The `Release` workflow accepts only `vMAJOR.MINOR.PATCH` tags. It:
 6. verifies architecture, bundle identity, minimum system version, code signing,
    notarization, and forbidden local-library paths;
 7. creates SHA-256 checksums and Sparkle EdDSA signatures;
-8. publishes immutable ZIP, DMG, corresponding-source, checksum, source-pin,
-   toolchain, license, and notice assets to the GitHub release.
+8. creates a draft release, uploads every ZIP, DMG, corresponding-source,
+   checksum, source-pin, toolchain, license, and notice asset, compares each
+   GitHub asset digest with its local SHA-256, and publishes the draft once so
+   GitHub locks the tag and assets as an immutable release.
 
 The workflow fails rather than publishing an unsigned or unnotarized artifact.
 It derives the public key from the supplied Sparkle private key in an ephemeral
@@ -124,8 +126,9 @@ adds the newly signed ZIP enclosure, and then updates the protected `gh-pages`
 branch after the GitHub release becomes visible. Treating the last release asset
 as canonical also recovers feed history when a prior Pages push failed. Older
 supported entries remain available so clients can calculate upgrade paths. The
-enclosure URL is the immutable release asset URL and includes its byte length,
-version, minimum system version, and EdDSA signature.
+enclosure URL is the immutable release asset URL and includes its byte length
+and EdDSA signature. The containing appcast item records the build version and
+minimum system version using Sparkle's canonical top-level elements.
 
 If publication succeeds but the Pages push fails, rerun the same tagged
 workflow. It will not replace release artifacts; it downloads the immutable

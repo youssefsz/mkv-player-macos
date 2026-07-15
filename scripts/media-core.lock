@@ -57,8 +57,8 @@ LIBPLACEBO_VULKAN_HEADERS_COMMIT="cacef3039d277c448c89336290ec3937270b0996"
 
 # Set these only after publishing a maintainer-built MediaCore artifact. The
 # bootstrap script deliberately fails closed while either value is empty.
-MEDIA_CORE_BINARY_URL=""
-MEDIA_CORE_BINARY_SHA256=""
+MEDIA_CORE_BINARY_URL="https://github.com/youssefsz/mkv-player-macos/releases/download/v0.1.0/MediaCore-0.41.0.xcframework.zip"
+MEDIA_CORE_BINARY_SHA256="3ebe4f32ef183efd881bcf443c6dfb00c3575a1da69d2bf96084c9784c4b7f66"
 
 # Sparkle's release tools are used only by the tagged-release workflow to sign
 # the update enclosure and generate the appcast. The app dependency itself is

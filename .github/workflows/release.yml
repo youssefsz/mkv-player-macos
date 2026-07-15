@@ -389,7 +389,11 @@ jobs:
           # A prior run may have published the immutable release and then lost
           # the race to update Pages. Recover from the release asset instead of
           # regenerating metadata for newly timestamped local artifacts.
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+          existing_release_state="$(gh release view "$GITHUB_REF_NAME" \
+            --json isDraft \
+            --jq '.isDraft' \
+            2>/dev/null || true)"
+          if [[ "$existing_release_state" == "false" ]]; then
             existing_directory="$RUNNER_TEMP/existing-appcast"
             mkdir -p "$existing_directory"
             gh release download "$GITHUB_REF_NAME" \
@@ -523,7 +527,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+          existing_release_state="$(gh release view "$GITHUB_REF_NAME" \
+            --json isDraft \
+            --jq '.isDraft' \
+            2>/dev/null || true)"
+          if [[ "$existing_release_state" == "false" ]]; then
             existing_directory="$RUNNER_TEMP/existing-release"
             mkdir -p "$existing_directory"
             gh release download "$GITHUB_REF_NAME" \
@@ -533,11 +541,45 @@ jobs:
             ditto "$existing_directory/appcast.xml" "$RELEASE_DIRECTORY/appcast.xml"
             echo "Release already exists; using its immutable appcast asset for Pages recovery"
           else
+            if [[ "$existing_release_state" == "true" ]]; then
+              echo "Removing an incomplete draft release before retrying"
+              gh release delete "$GITHUB_REF_NAME" --yes
+            fi
+
+            release_files=("$RELEASE_DIRECTORY"/*)
             gh release create "$GITHUB_REF_NAME" \
-              "$RELEASE_DIRECTORY"/* \
+              --draft \
               --verify-tag \
               --title "MKV Player $VERSION" \
               --generate-notes
+            gh release upload "$GITHUB_REF_NAME" "${release_files[@]}"
+
+            release_json="$(gh release view "$GITHUB_REF_NAME" \
+              --json isDraft,assets)"
+            if [[ "$(jq -r '.isDraft' <<<"$release_json")" != "true" ]]; then
+              echo "Release must remain a draft while assets are verified" >&2
+              exit 1
+            fi
+            if (( $(jq '.assets | length' <<<"$release_json") != ${#release_files[@]} )); then
+              echo "Draft release asset count does not match the local release set" >&2
+              exit 1
+            fi
+            for path in "${release_files[@]}"; do
+              name="$(basename "$path")"
+              local_digest="sha256:$(shasum -a 256 "$path" | awk '{print $1}')"
+              remote_digest="$(jq -r \
+                --arg name "$name" \
+                '.assets[] | select(.name == $name) | .digest' \
+                <<<"$release_json")"
+              if [[ "$remote_digest" != "$local_digest" ]]; then
+                echo "Uploaded release asset digest mismatch: $name" >&2
+                exit 1
+              fi
+            done
+
+            # Publishing locks the tag and all verified assets when repository
+            # release immutability is enabled.
+            gh release edit "$GITHUB_REF_NAME" --draft=false
           fi
 
           immutable="$(gh api \
@@ -573,7 +615,7 @@ jobs:
               exit 0
             fi
             latest_build="$(xmllint \
-              --xpath "string((//*[local-name()='enclosure']/@*[local-name()='version'])[1])" \
+              --xpath "string((//*[local-name()='item']/*[local-name()='version'])[1])" \
               "$current_appcast")"
             if [[ ! "$latest_build" =~ ^[0-9]+$ ]]; then
               echo "Current appcast has no valid latest Sparkle build number" >&2
