@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>MKV Player</title>
+        <item>
+            <title>0.1.0</title>
+            <pubDate>Wed, 15 Jul 2026 15:11:06 +0000</pubDate>
+            <link>https://github.com/youssefsz/mkv-player-macos</link>
+            <sparkle:version>1000</sparkle:version>
+            <sparkle:shortVersionString>0.1.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/youssefsz/mkv-player-macos/releases/download/v0.1.0/MKV-Player-0.1.0.zip" length="30424387" type="application/octet-stream" sparkle:edSignature="8SNWKOQdPPMTRxuw5kTHait25Pn+1tb1Q6yrJ3lvGnsGntvqBEE4C2UIvF+uSINSPaCBxGHAJow4aaAJ/TENCw=="/>
+        </item>
+    </channel>
+</rss>
