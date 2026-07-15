@@ -177,6 +177,10 @@ Focused bug fixes, accessibility improvements, compatibility results, and
 well-scoped features are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before
 opening an issue or pull request.
 
+## Author
+
+Created and maintained by [Youssef Dhibi](https://youssef.tn).
+
 ## License
 
 MKV Player is available under the

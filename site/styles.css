@@ -253,6 +253,16 @@ footer nav {
   gap: 22px;
 }
 
+.credits {
+  display: flex;
+  gap: 18px;
+}
+
+.credits a {
+  color: var(--ink);
+  font-weight: 600;
+}
+
 a:hover,
 footer a:hover {
   color: #000;
@@ -317,6 +327,11 @@ a:focus-visible {
 
   footer nav {
     flex-wrap: wrap;
+  }
+
+  .credits {
+    flex-direction: column;
+    gap: 8px;
   }
 }
 
