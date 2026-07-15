@@ -74,12 +74,26 @@ for command in codesign ditto file lipo nm otool plutil shasum spctl unzip xcrun
 done
 
 temporary_directory="$(mktemp -d "${TMPDIR:-/tmp}/MKVPlayer-verify.XXXXXX")"
-mounted_device=""
+mounted_target=""
 cleanup() {
-  if [[ -n "$mounted_device" ]]; then
-    hdiutil detach "$mounted_device" -quiet || true
+  local exit_status=$?
+
+  trap - EXIT
+  if [[ -n "$mounted_target" ]]; then
+    for _ in 1 2 3; do
+      if hdiutil detach "$mounted_target" -quiet; then
+        mounted_target=""
+        break
+      fi
+      sleep 1
+    done
+    if [[ -n "$mounted_target" ]]; then
+      hdiutil detach "$mounted_target" -force -quiet || \
+        printf 'warning: could not detach disk image mounted at %s\n' "$mounted_target" >&2
+    fi
   fi
-  rm -rf "$temporary_directory"
+  rm -rf "$temporary_directory" 2>/dev/null || true
+  exit "$exit_status"
 }
 trap cleanup EXIT
 
@@ -99,9 +113,8 @@ case "$ARTIFACT" in
     require_command hdiutil
     mount_point="$temporary_directory/mount"
     mkdir -p "$mount_point"
-    attach_output="$(hdiutil attach "$ARTIFACT" -nobrowse -readonly -mountpoint "$mount_point")"
-    mounted_device="$(printf '%s\n' "$attach_output" | awk '/Apple_HFS|Apple_APFS/ {print $1; exit}')"
-    [[ -n "$mounted_device" ]] || die "could not determine mounted disk image device"
+    hdiutil attach "$ARTIFACT" -nobrowse -readonly -mountpoint "$mount_point" >/dev/null
+    mounted_target="$mount_point"
     apps=()
     while IFS= read -r -d '' app; do apps+=("$app"); done < <(find "$mount_point" -maxdepth 2 -type d -name 'MKV Player.app' -print0)
     [[ ${#apps[@]} -eq 1 ]] || die "disk image must contain exactly one MKV Player.app"
