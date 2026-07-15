@@ -71,6 +71,8 @@ header {
 
 .hero-copy {
   max-width: 760px;
+  margin-inline: auto;
+  text-align: center;
 }
 
 h1,
@@ -89,7 +91,7 @@ h1 {
 
 .hero-copy > p {
   max-width: 580px;
-  margin: 28px 0 0;
+  margin: 28px auto 0;
   color: var(--muted);
   font-size: 17px;
   line-height: 1.6;
@@ -99,6 +101,7 @@ h1 {
   margin-top: 34px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 18px;
 }
 
@@ -112,10 +115,14 @@ h1 {
   background: var(--ink);
   font-size: 13px;
   font-weight: 620;
+  transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .download:hover {
-  background: #151514;
+  color: var(--white);
+  background: #3a3937;
+  box-shadow: 0 8px 20px rgba(41, 40, 39, 0.18);
+  transform: translateY(-1px);
 }
 
 .download-row span {
@@ -277,7 +284,7 @@ a:focus-visible {
   }
 
   .download-row {
-    align-items: flex-start;
+    align-items: center;
     flex-direction: column;
     gap: 12px;
   }
@@ -310,5 +317,18 @@ a:focus-visible {
 
   footer nav {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 520px) {
+  .desktop-break {
+    display: none;
+  }
+
+  dl > div {
+    padding: 16px 0;
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 6px;
   }
 }

@@ -631,13 +631,21 @@ jobs:
           if [[ "$appcast_needs_update" == "true" ]]; then
             ditto "$RELEASE_DIRECTORY/appcast.xml" "$pages_directory/appcast.xml"
           fi
-          ditto site/index.html "$pages_directory/index.html"
-          ditto site/styles.css "$pages_directory/styles.css"
-          ditto site/app-screenshot.png "$pages_directory/app-screenshot.png"
-          ditto \
-            App/MKVPlayer/Resources/Assets.xcassets/AppIcon.appiconset/icon_256x256.png \
-            "$pages_directory/icon.png"
-          touch "$pages_directory/.nojekyll"
+
+          release_json="$(gh release view "$GITHUB_REF_NAME" --json url,assets)"
+          release_url="$(jq -r '.url' <<<"$release_json")"
+          dmg_url="$(jq -r \
+            '[.assets[] | select(.name | endswith(".dmg"))] | if length == 1 then .[0].url else "" end' \
+            <<<"$release_json")"
+          if [[ -z "$dmg_url" ]]; then
+            echo "Published release must contain exactly one DMG asset" >&2
+            exit 1
+          fi
+          scripts/render-site.sh \
+            "$VERSION" \
+            "$dmg_url" \
+            "$release_url" \
+            "$pages_directory"
           git -C "$pages_directory" config user.name 'github-actions[bot]'
           git -C "$pages_directory" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git -C "$pages_directory" add \
