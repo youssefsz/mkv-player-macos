@@ -459,18 +459,31 @@ jobs:
             exit 1
           fi
           enclosure_xpath="//*[local-name()='enclosure' and contains(@url, '/$(basename "$RELEASE_ZIP")')]"
+          item_xpath="$enclosure_xpath/parent::*[local-name()='item']"
           enclosure_url="$(xmllint --xpath "string($enclosure_xpath/@url)" "$appcast_input/appcast.xml")"
-          enclosure_version="$(xmllint --xpath "string($enclosure_xpath/@*[local-name()='version'])" "$appcast_input/appcast.xml")"
+          item_version="$(xmllint --xpath "string($item_xpath/*[local-name()='version'])" "$appcast_input/appcast.xml")"
           enclosure_length="$(xmllint --xpath "string($enclosure_xpath/@length)" "$appcast_input/appcast.xml")"
           expected_url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/$(basename "$RELEASE_ZIP")"
           expected_length="$(stat -f '%z' "$RELEASE_ZIP")"
-          test "$enclosure_url" = "$expected_url"
-          test "$enclosure_version" = "$BUILD_NUMBER"
-          test "$enclosure_length" = "$expected_length"
+          if [[ "$enclosure_url" != "$expected_url" ]]; then
+            echo "Generated appcast enclosure URL does not match the release asset URL" >&2
+            exit 1
+          fi
+          if [[ "$item_version" != "$BUILD_NUMBER" ]]; then
+            echo "Generated appcast item version does not match build $BUILD_NUMBER" >&2
+            exit 1
+          fi
+          if [[ "$enclosure_length" != "$expected_length" ]]; then
+            echo "Generated appcast enclosure length does not match the release archive" >&2
+            exit 1
+          fi
           insecure_enclosures="$(xmllint \
             --xpath "count(//*[local-name()='enclosure' and not(starts-with(@url, 'https://'))])" \
             "$appcast_input/appcast.xml")"
-          test "$insecure_enclosures" = "0"
+          if [[ "$insecure_enclosures" != "0" ]]; then
+            echo "Generated appcast contains a non-HTTPS enclosure URL" >&2
+            exit 1
+          fi
           "$sparkle_tools/bin/sign_update" \
             --verify \
             --ed-key-file "$sparkle_key" \
