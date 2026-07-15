@@ -87,8 +87,26 @@ public final class MPVVideoSurface: NSView {
         guard state == .ready else {
             return false
         }
-        videoLayer.setNeedsDisplay()
-        return await client.waitForRenderContext(timeout: timeout)
+
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: timeout)
+        while clock.now < deadline {
+            // A normal app run loop commits this implicit transaction for us.
+            // App-hosted tests can wait without advancing that run loop, so
+            // initiate and flush the display update explicitly as well.
+            layoutSubtreeIfNeeded()
+            videoLayer.setNeedsDisplay()
+            videoLayer.displayIfNeeded()
+            CATransaction.flush()
+
+            let remaining = clock.now.duration(to: deadline)
+            let pollingInterval = min(remaining, .milliseconds(100))
+            if await client.waitForRenderContext(timeout: pollingInterval) {
+                return true
+            }
+        }
+
+        return await client.waitForRenderContext(timeout: .zero)
     }
 
     private func updateContentsScale() {

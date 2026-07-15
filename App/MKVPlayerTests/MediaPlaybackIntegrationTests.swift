@@ -243,10 +243,14 @@ final class MediaPlaybackIntegrationTests: XCTestCase {
         )
         window.title = "Playback Integration Test"
         window.contentView = surface
-        // XCTest can run while the host application is inactive. Present the
-        // window regardless so CAOpenGLLayer receives a drawable on CI as well
-        // as during an interactive local test run.
+        // Give the hosted surface a real AppKit presentation lifecycle. Making
+        // the window key/main is sufficient even when the XCTest host itself is
+        // not the active application; orderFrontRegardless also keeps the
+        // window visible on a noninteractive CI desktop.
+        window.makeKeyAndOrderFront(nil)
+        window.makeMain()
         window.orderFrontRegardless()
+        window.contentView?.layoutSubtreeIfNeeded()
         window.displayIfNeeded()
         surface.displayIfNeeded()
 
