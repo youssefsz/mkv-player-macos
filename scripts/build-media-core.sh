@@ -12,6 +12,7 @@ CACHE_DIR="${MEDIA_CORE_CACHE_DIR:-$HOME/Library/Caches/io.github.youssefsz.MKVP
 WORK_DIR=""
 KEEP_WORK=false
 SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-1735689600}"
+INSTALL_PREFIX="/usr/local"
 
 usage() {
   cat <<EOF
@@ -78,7 +79,7 @@ done
 [[ "$OUTPUT" == *.xcframework ]] || die "output must end in .xcframework"
 [[ "$SOURCE_DATE_EPOCH" =~ ^[0-9]+$ ]] || die "SOURCE_DATE_EPOCH must be an integer"
 
-for command in awk curl ditto git install_name_tool lipo make meson nasm ninja otool pkg-config rsync shasum sysctl tar xcodebuild xcrun; do
+for command in awk curl ditto git install_name_tool lipo make meson nasm ninja otool pkg-config rsync shasum strings sysctl tar xcodebuild xcrun; do
   require_command "$command"
 done
 validate_lock_file
@@ -125,10 +126,10 @@ unset CFLAGS CXXFLAGS CPPFLAGS LDFLAGS CPATH CPLUS_INCLUDE_PATH LIBRARY_PATH \
 
 SOURCE_DIR="$WORK_DIR/sources"
 BUILD_DIR="$WORK_DIR/build"
-PREFIX_DIR="$WORK_DIR/prefix"
+STAGING_DIR="$WORK_DIR/staging"
 FRAMEWORK_DIR="$WORK_DIR/frameworks"
-rm -rf "$SOURCE_DIR" "$BUILD_DIR" "$PREFIX_DIR" "$FRAMEWORK_DIR"
-mkdir -p "$SOURCE_DIR" "$BUILD_DIR" "$PREFIX_DIR" "$FRAMEWORK_DIR"
+rm -rf "$SOURCE_DIR" "$BUILD_DIR" "$STAGING_DIR" "$FRAMEWORK_DIR"
+mkdir -p "$SOURCE_DIR" "$BUILD_DIR" "$STAGING_DIR" "$FRAMEWORK_DIR"
 
 for component in "${MEDIA_CORE_COMPONENTS[@]}"; do
   archive_variable="${component}_ARCHIVE"
@@ -161,8 +162,7 @@ PYTHON3="$(xcrun --find python3)"
 
 write_cross_file() {
   local architecture="$1"
-  local prefix="$2"
-  local output="$3"
+  local output="$2"
   local cpu_family cpu
 
   case "$architecture" in
@@ -198,15 +198,15 @@ endian = 'little'
 needs_exe_wrapper = true
 
 [built-in options]
-prefix = '$prefix'
+prefix = '$INSTALL_PREFIX'
 libdir = 'lib'
 default_library = 'static'
 b_staticpic = true
 b_lundef = true
-c_args = ['-arch', '$architecture', '-isysroot', '$SDK_PATH', '-mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS', '-fvisibility=hidden']
-cpp_args = ['-arch', '$architecture', '-isysroot', '$SDK_PATH', '-mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS', '-fvisibility=hidden']
-objc_args = ['-arch', '$architecture', '-isysroot', '$SDK_PATH', '-mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS', '-fvisibility=hidden']
-objcpp_args = ['-arch', '$architecture', '-isysroot', '$SDK_PATH', '-mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS', '-fvisibility=hidden']
+c_args = ['-arch', '$architecture', '-isysroot', '$SDK_PATH', '-mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS', '-fvisibility=hidden', '-ffile-prefix-map=$WORK_DIR=.', '-fdebug-prefix-map=$WORK_DIR=.', '-fmacro-prefix-map=$WORK_DIR=.']
+cpp_args = ['-arch', '$architecture', '-isysroot', '$SDK_PATH', '-mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS', '-fvisibility=hidden', '-ffile-prefix-map=$WORK_DIR=.', '-fdebug-prefix-map=$WORK_DIR=.', '-fmacro-prefix-map=$WORK_DIR=.']
+objc_args = ['-arch', '$architecture', '-isysroot', '$SDK_PATH', '-mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS', '-fvisibility=hidden', '-ffile-prefix-map=$WORK_DIR=.', '-fdebug-prefix-map=$WORK_DIR=.', '-fmacro-prefix-map=$WORK_DIR=.']
+objcpp_args = ['-arch', '$architecture', '-isysroot', '$SDK_PATH', '-mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS', '-fvisibility=hidden', '-ffile-prefix-map=$WORK_DIR=.', '-fdebug-prefix-map=$WORK_DIR=.', '-fmacro-prefix-map=$WORK_DIR=.']
 c_link_args = ['-arch', '$architecture', '-isysroot', '$SDK_PATH', '-mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS', '-lc++', '-liconv']
 cpp_link_args = ['-arch', '$architecture', '-isysroot', '$SDK_PATH', '-mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS', '-liconv']
 objc_link_args = ['-arch', '$architecture', '-isysroot', '$SDK_PATH', '-mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS', '-lc++', '-liconv']
@@ -214,11 +214,28 @@ objcpp_link_args = ['-arch', '$architecture', '-isysroot', '$SDK_PATH', '-mmacos
 EOF
 }
 
+sanitize_generated_configuration() {
+  local header="$1"
+
+  [[ -f "$header" ]] || die "generated configuration header is missing: $header"
+  "$PYTHON3" - "$header" "$WORK_DIR" <<'PY'
+from pathlib import Path
+import sys
+
+header = Path(sys.argv[1])
+private_root = sys.argv[2].encode()
+contents = header.read_bytes()
+sanitized = contents.replace(private_root, b"/MediaCoreBuild")
+if sanitized != contents:
+    header.write_bytes(sanitized)
+PY
+}
+
 meson_build() {
   local name="$1"
   local source="$2"
   local architecture="$3"
-  local prefix="$4"
+  local staging_root="$4"
   local cross_file="$5"
   shift 5
   local build="$BUILD_DIR/$architecture/$name"
@@ -233,7 +250,7 @@ meson_build() {
   if [[ "$name" == "mpv" ]]; then
     meson setup "$build" "$source" \
       --cross-file "$cross_file" \
-      --prefix "$prefix" \
+      --prefix "$INSTALL_PREFIX" \
       --libdir lib \
       --buildtype release \
       --default-library "$library_type" \
@@ -243,26 +260,29 @@ meson_build() {
   else
     meson setup "$build" "$source" \
       --cross-file "$cross_file" \
-      --prefix "$prefix" \
+      --prefix "$INSTALL_PREFIX" \
       --libdir lib \
       --buildtype release \
       --default-library "$library_type" \
       --wrap-mode nodownload \
       "$@"
   fi
+  if [[ "$name" == "mpv" ]]; then
+    sanitize_generated_configuration "$build/config.h"
+  fi
   meson compile -C "$build"
-  meson install -C "$build"
+  meson install -C "$build" --destdir "$staging_root"
 }
 
 build_ffmpeg() {
   local architecture="$1"
-  local prefix="$2"
+  local staging_root="$2"
   local build="$BUILD_DIR/$architecture/ffmpeg"
   local ffmpeg_arch="$architecture"
   local configure_arguments=(
-    "--prefix=$prefix"
-    "--libdir=$prefix/lib"
-    "--incdir=$prefix/include"
+    "--prefix=$INSTALL_PREFIX"
+    "--libdir=$INSTALL_PREFIX/lib"
+    "--incdir=$INSTALL_PREFIX/include"
     "--target-os=darwin"
     "--cc=$CLANG"
     "--cxx=$CLANGXX"
@@ -275,8 +295,8 @@ build_ffmpeg() {
     "--host-ld=$CLANG"
     "--host-ldflags=-isysroot $SDK_PATH -mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS"
     "--pkg-config=/usr/bin/false"
-    "--extra-cflags=-arch $architecture -isysroot $SDK_PATH -mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS -fvisibility=hidden"
-    "--extra-cxxflags=-arch $architecture -isysroot $SDK_PATH -mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS -fvisibility=hidden"
+    "--extra-cflags=-arch $architecture -isysroot $SDK_PATH -mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS -fvisibility=hidden -ffile-prefix-map=$WORK_DIR=. -fdebug-prefix-map=$WORK_DIR=. -fmacro-prefix-map=$WORK_DIR=."
+    "--extra-cxxflags=-arch $architecture -isysroot $SDK_PATH -mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS -fvisibility=hidden -ffile-prefix-map=$WORK_DIR=. -fdebug-prefix-map=$WORK_DIR=. -fmacro-prefix-map=$WORK_DIR=."
     "--extra-ldflags=-arch $architecture -isysroot $SDK_PATH -mmacosx-version-min=$MEDIA_CORE_MINIMUM_MACOS"
     --enable-static
     --disable-shared
@@ -306,8 +326,9 @@ build_ffmpeg() {
   mkdir -p "$build"
   pushd "$build" >/dev/null
   "$SOURCE_DIR/$FFMPEG_DIRECTORY/configure" "${configure_arguments[@]}"
+  sanitize_generated_configuration "$build/config.h"
   make -j"$(sysctl -n hw.logicalcpu)"
-  make install
+  make DESTDIR="$staging_root" install
   popd >/dev/null
 }
 
@@ -367,6 +388,10 @@ create_framework() {
     grep -q .; then
     otool -L "$version_directory/MediaCore" >&2
     die "MediaCore has a non-system dynamic dependency for $architecture"
+  fi
+
+  if [[ -n "$(strings -a "$version_directory/MediaCore" | grep -F "$WORK_DIR" || true)" ]]; then
+    die "MediaCore contains its private build workspace for $architecture"
   fi
 
   ditto "$prefix/include/mpv" "$version_directory/Headers/mpv"
@@ -446,39 +471,40 @@ EOF
 
 for architecture in "${ARCHITECTURES[@]}"; do
   log "Building MediaCore for $architecture"
-  prefix="$PREFIX_DIR/$architecture"
+  staging_root="$STAGING_DIR/$architecture"
+  prefix="$staging_root$INSTALL_PREFIX"
   cross_file="$BUILD_DIR/$architecture/meson-cross.ini"
   mkdir -p "$prefix" "$(dirname "$cross_file")"
-  write_cross_file "$architecture" "$prefix" "$cross_file"
+  write_cross_file "$architecture" "$cross_file"
 
   export PKG_CONFIG_LIBDIR="$prefix/lib/pkgconfig:$prefix/share/pkgconfig"
   export PKG_CONFIG_PATH=""
-  export PKG_CONFIG_SYSROOT_DIR=""
+  export PKG_CONFIG_SYSROOT_DIR="$staging_root"
 
-  meson_build harfbuzz "$SOURCE_DIR/$HARFBUZZ_DIRECTORY" "$architecture" "$prefix" "$cross_file" \
+  meson_build harfbuzz "$SOURCE_DIR/$HARFBUZZ_DIRECTORY" "$architecture" "$staging_root" "$cross_file" \
     -Dtests=disabled -Ddocs=disabled -Dutilities=disabled -Dbenchmark=disabled \
     -Dglib=disabled -Dgobject=disabled -Dcairo=disabled -Dchafa=disabled \
     -Dicu=disabled -Dgraphite2=disabled -Dfreetype=disabled -Dcoretext=disabled
 
-  meson_build freetype "$SOURCE_DIR/$FREETYPE_DIRECTORY" "$architecture" "$prefix" "$cross_file" \
+  meson_build freetype "$SOURCE_DIR/$FREETYPE_DIRECTORY" "$architecture" "$staging_root" "$cross_file" \
     -Dbrotli=disabled -Dbzip2=disabled -Dharfbuzz=disabled -Dpng=disabled -Dzlib=system -Dtests=disabled
 
-  meson_build fribidi "$SOURCE_DIR/$FRIBIDI_DIRECTORY" "$architecture" "$prefix" "$cross_file" \
+  meson_build fribidi "$SOURCE_DIR/$FRIBIDI_DIRECTORY" "$architecture" "$staging_root" "$cross_file" \
     -Ddocs=false -Dbin=false -Dtests=false
 
-  meson_build libass "$SOURCE_DIR/$LIBASS_DIRECTORY" "$architecture" "$prefix" "$cross_file" \
+  meson_build libass "$SOURCE_DIR/$LIBASS_DIRECTORY" "$architecture" "$staging_root" "$cross_file" \
     -Dtest=disabled -Dcompare=disabled -Dfontconfig=disabled -Dcoretext=enabled \
     -Dlibunibreak=disabled -Drequire-system-font-provider=true
 
-  build_ffmpeg "$architecture" "$prefix"
+  build_ffmpeg "$architecture" "$staging_root"
 
-  meson_build libplacebo "$LIBPLACEBO_SOURCE" "$architecture" "$prefix" "$cross_file" \
+  meson_build libplacebo "$LIBPLACEBO_SOURCE" "$architecture" "$staging_root" "$cross_file" \
     -Dvulkan=disabled -Dopengl=enabled -Dgl-proc-addr=disabled \
     -Dglslang=disabled -Dshaderc=disabled -Dlcms=disabled -Ddovi=disabled \
     -Dlibdovi=disabled -Dxxhash=disabled -Dunwind=disabled \
     -Ddemos=false -Dtests=false -Dbench=false -Dfuzz=false
 
-  meson_build mpv "$SOURCE_DIR/$MPV_DIRECTORY" "$architecture" "$prefix" "$cross_file" \
+  meson_build mpv "$SOURCE_DIR/$MPV_DIRECTORY" "$architecture" "$staging_root" "$cross_file" \
     -Dgpl=true -Dcplayer=false -Dlibmpv=true -Dbuild-date=false -Dtests=false \
     -Dcplugins=disabled -Djavascript=disabled -Dlua=disabled -Dcdda=disabled \
     -Ddvdnav=disabled -Dlibarchive=disabled -Dlibbluray=disabled \
@@ -490,7 +516,7 @@ for architecture in "${ARCHITECTURES[@]}"; do
     -Dspirv-cross=disabled -Dcocoa=enabled -Dgl-cocoa=enabled \
     -Dmacos-cocoa-cb=disabled -Dmacos-media-player=disabled \
     -Dmacos-touchbar=disabled -Dswift-build=enabled \
-    "-Dswift-flags=-target $architecture-apple-macosx$MEDIA_CORE_MINIMUM_MACOS" \
+    "-Dswift-flags=-target $architecture-apple-macosx$MEDIA_CORE_MINIMUM_MACOS -debug-prefix-map $WORK_DIR=. -file-prefix-map $WORK_DIR=." \
     -Dcoreaudio=enabled \
     -Davfoundation=disabled -Dvideotoolbox-gl=enabled -Dvideotoolbox-pl=disabled \
     -Diconv=enabled -Dzlib=enabled -Dmanpage-build=disabled -Dhtml-build=disabled

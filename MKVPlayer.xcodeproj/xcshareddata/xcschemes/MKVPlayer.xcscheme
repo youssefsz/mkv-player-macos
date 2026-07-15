@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AAB980EB176FBB40F0ECBAB1"
-               BuildableName = "MKVPlayer.app"
+               BlueprintIdentifier = "0EDDB903720A625EDAF33E67"
+               BuildableName = "MKV Player.app"
                BlueprintName = "MKVPlayer"
                ReferencedContainer = "container:MKVPlayer.xcodeproj">
             </BuildableReference>
@@ -30,8 +30,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AAB980EB176FBB40F0ECBAB1"
-            BuildableName = "MKVPlayer.app"
+            BlueprintIdentifier = "0EDDB903720A625EDAF33E67"
+            BuildableName = "MKV Player.app"
             BlueprintName = "MKVPlayer"
             ReferencedContainer = "container:MKVPlayer.xcodeproj">
          </BuildableReference>
@@ -41,7 +41,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "414A3A729B2996206E791A06"
+               BlueprintIdentifier = "215CCB8A6A555A98291467BD"
                BuildableName = "MKVPlayerTests.xctest"
                BlueprintName = "MKVPlayerTests"
                ReferencedContainer = "container:MKVPlayer.xcodeproj">
@@ -63,8 +63,8 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AAB980EB176FBB40F0ECBAB1"
-            BuildableName = "MKVPlayer.app"
+            BlueprintIdentifier = "0EDDB903720A625EDAF33E67"
+            BuildableName = "MKV Player.app"
             BlueprintName = "MKVPlayer"
             ReferencedContainer = "container:MKVPlayer.xcodeproj">
          </BuildableReference>
@@ -80,8 +80,8 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AAB980EB176FBB40F0ECBAB1"
-            BuildableName = "MKVPlayer.app"
+            BlueprintIdentifier = "0EDDB903720A625EDAF33E67"
+            BuildableName = "MKV Player.app"
             BlueprintName = "MKVPlayer"
             ReferencedContainer = "container:MKVPlayer.xcodeproj">
          </BuildableReference>

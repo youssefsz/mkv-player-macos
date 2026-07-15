@@ -1,0 +1,32 @@
+name: Feature request
+description: Propose a focused improvement to the local macOS player.
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Explain the user problem before describing a solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe how the feature should work in the app and menus.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Note existing macOS behavior or simpler approaches that may address the problem.
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: The request is for local media playback on macOS.
+          required: true
+        - label: I searched existing issues for a similar request.
+          required: true

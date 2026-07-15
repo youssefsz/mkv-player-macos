@@ -67,7 +67,7 @@
 	<key>SUEnableInstallerLauncherService</key>
 	<true/>
 	<key>SUFeedURL</key>
-	<string>https://youssefsz.github.io/mkv-player-native/appcast.xml</string>
+	<string>https://youssefsz.github.io/mkv-player-macos/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>$(SPARKLE_PUBLIC_ED_KEY)</string>
 	<key>UTImportedTypeDeclarations</key>

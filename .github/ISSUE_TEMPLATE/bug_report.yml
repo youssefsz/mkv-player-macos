@@ -1,0 +1,65 @@
+name: Bug report
+description: Report a reproducible problem with MKV Player.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Search existing issues first and remove personal paths or private media details from logs.
+  - type: input
+    id: version
+    attributes:
+      label: MKV Player version
+      description: Use the version shown in About MKV Player, or provide the commit SHA for a source build.
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS and Mac
+      description: Include the macOS version, Mac model, and Apple Silicon or Intel architecture.
+      placeholder: macOS 14.7, MacBook Pro, Apple M2 Pro
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe what happened and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide the smallest reliable sequence that triggers the problem.
+      placeholder: |
+        1. Open ...
+        2. Choose ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: media
+    attributes:
+      label: Media details
+      description: For playback bugs, include sanitized ffprobe output, container and codecs, track layout, and whether hardware decoding was active.
+      render: text
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: Paste sanitized app diagnostics, crash output, or relevant logs. Do not upload copyrighted or private media.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues for this problem.
+          required: true
+        - label: I removed secrets, personal paths, and private media information.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true

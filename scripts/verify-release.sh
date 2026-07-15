@@ -139,7 +139,7 @@ fi
 if [[ -n "$EXPECTED_SPARKLE_PUBLIC_KEY" && "$sparkle_public_key" != "$EXPECTED_SPARKLE_PUBLIC_KEY" ]]; then
   die "embedded Sparkle public key does not match the release key"
 fi
-[[ "$sparkle_feed_url" == "https://youssefsz.github.io/mkv-player-native/appcast.xml" ]] || \
+[[ "$sparkle_feed_url" == "https://youssefsz.github.io/mkv-player-macos/appcast.xml" ]] || \
   die "unexpected Sparkle feed URL: $sparkle_feed_url"
 [[ "$installer_service" == "true" ]] || die "Sparkle installer launcher service is not enabled"
 if plutil -extract SUEnableDownloaderService raw -o - "$INFO_PLIST" >/dev/null 2>&1; then

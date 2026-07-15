@@ -18,20 +18,25 @@ accessibility, and deterministic media-engine configuration.
 
 ## Development setup
 
-1. Install Xcode 26 or later and select its command-line tools.
+1. Install Xcode 26 or later and finish its first-launch setup.
 2. Install build-only prerequisites: Meson, NASM, Ninja, pkg-config, and the
    pinned `xcodeproj` Ruby gem.
-3. Run `scripts/build-media-core.sh`, or use the checksum-verified bootstrap
-   after a binary artifact has been published.
+3. Run `scripts/build-media-core.sh --arch "$(uname -m)"` for the current Mac,
+   or `scripts/build-media-core.sh` for a universal framework.
 4. Run `ruby tools/generate_project.rb` after MediaCore exists so the generated
    project embeds it.
 5. Open `MKVPlayer.xcodeproj` and use the shared `MKVPlayer` scheme.
 
-The dependency installation commands are:
+The setup commands are:
 
 ```sh
+sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+sudo xcodebuild -runFirstLaunch
 brew install meson nasm ninja pkg-config
 gem install xcodeproj --version 1.27.0 --user-install --no-document
+scripts/build-media-core.sh --arch "$(uname -m)"
+ruby tools/generate_project.rb
+open MKVPlayer.xcodeproj
 ```
 
 Homebrew may supply build tools, but release binaries must not link libraries

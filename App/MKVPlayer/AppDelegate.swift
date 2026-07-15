@@ -195,11 +195,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     }
 
     @objc func openProjectWebsite(_ sender: Any?) {
-        openWebPage("https://github.com/youssefsz/mkv-player-native")
+        openWebPage("https://github.com/youssefsz/mkv-player-macos")
     }
 
     @objc func reportIssue(_ sender: Any?) {
-        openWebPage("https://github.com/youssefsz/mkv-player-native/issues/new/choose")
+        openWebPage("https://github.com/youssefsz/mkv-player-macos/issues/new/choose")
     }
 
     func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {

@@ -6,6 +6,13 @@ from a clean checkout without Homebrew media libraries.
 
 ## One-time repository setup
 
+The canonical public repository is
+[`youssefsz/mkv-player-macos`](https://github.com/youssefsz/mkv-player-macos).
+Its Sparkle feed is published from the `gh-pages` branch at
+`https://youssefsz.github.io/mkv-player-macos/appcast.xml`. Treat changes to
+either location as a release migration: update the app, verifier, documentation,
+and existing clients together.
+
 Configure these GitHub Actions secrets:
 
 | Secret | Purpose |
@@ -41,6 +48,10 @@ the first tag. After publishing, the workflow checks the release object's
 The repository-level setting itself requires an administrator to inspect or
 change. This ensures a published tag or asset cannot later be replaced at the
 same Sparkle download URL.
+
+Create the repository labels `bug`, `enhancement`, and `documentation` before
+the first release so issue forms and generated release notes use consistent
+categories.
 
 ## Prepare a release
 

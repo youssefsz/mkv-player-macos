@@ -3,6 +3,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# This variable is consumed by the scripts that source this shared file.
+# shellcheck disable=SC2034
 REPOSITORY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 LOCK_FILE="$SCRIPT_DIR/media-core.lock"
 

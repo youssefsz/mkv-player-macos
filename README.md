@@ -1,89 +1,150 @@
-# MKV Player
+<p align="center">
+  <img src="App/MKVPlayer/Resources/Assets.xcassets/AppIcon.appiconset/icon_128x128.png" width="96" height="96" alt="MKV Player icon">
+</p>
 
-MKV Player is a small, native macOS video player focused on local files. It
-uses AppKit for the player window and controls, and libmpv for broad container,
-codec, audio-track, chapter, and subtitle support.
+<h1 align="center">MKV Player</h1>
 
-The design goal is deliberately modest: a fast player that behaves like a Mac
-app. There is no Electron shell, media-library dashboard, account, telemetry,
-decorative gradient, or generated-looking visual clutter.
+<p align="center">
+  A focused, native video player for macOS, powered by libmpv.
+</p>
 
-> [!NOTE]
-> The project is under active development. The app can be built and its UI and
-> state model can be tested without the media engine, but playback requires the
-> pinned MediaCore dependency described below.
+<p align="center">
+  <a href="https://github.com/youssefsz/mkv-player-macos/actions/workflows/ci.yml"><img src="https://github.com/youssefsz/mkv-player-macos/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+  <img src="https://img.shields.io/badge/macOS-14%2B-000000?logo=apple&logoColor=white" alt="macOS 14 or later">
+  <img src="https://img.shields.io/badge/Swift-6.2-F05138?logo=swift&logoColor=white" alt="Swift 6.2">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0--or--later-4c1" alt="GPL-3.0-or-later license"></a>
+</p>
 
-## Highlights
+MKV Player is built with AppKit and libmpv for people who want a capable local
+video player that still feels like a Mac app. It has no account, telemetry,
+media-library database, plug-in system, or network-streaming feature.
 
-- Opens MKV, MP4, M4V, MOV, WebM, AVI, TS, and M2TS files.
-- Supports embedded audio, subtitle, and chapter tracks exposed by libmpv.
-- Loads external SRT, ASS/SSA, WebVTT, and other subtitle formats supported by
-  the engine.
-- Uses VideoToolbox hardware decoding when it is safe and available, with
-  software decoding as a fallback.
-- Provides native menus, keyboard control, drag and drop, fullscreen,
-  accessibility labels, and system appearance support.
-- Remembers recent files and sensible resume positions using sandbox-compatible
-  security-scoped bookmarks.
-- Keeps playback local. Network access is reserved for Sparkle update checks;
-  URL streaming is not a version 1 feature.
+## Download
 
-Container support does not guarantee every codec combination. The fixtures and
-manual compatibility matrix document what a release has actually been tested
-with.
+Signed and notarized builds are distributed through
+[GitHub Releases](https://github.com/youssefsz/mkv-player-macos/releases). If no
+binary release is listed yet, follow [Build from source](#build-from-source).
 
-## Requirements
+When a release is available:
 
-- macOS 14 Sonoma or later
-- Xcode 26 or later (the app still deploys to macOS 14)
-- Swift 6.2-capable toolchain
-- For source MediaCore builds: Meson, NASM, Ninja, pkg-config, Git, and standard
-  Unix build tools
+1. Download `MKV-Player-<version>.dmg`.
+2. Open the disk image.
+3. Drag **MKV Player** into **Applications**.
+4. Open the app and choose a video with **Command-O**.
 
-Both Apple Silicon and Intel Macs are release targets.
+Release builds include the media engine and support both Apple Silicon and
+Intel Macs. Xcode, Homebrew, and separate codec packages are not required.
+The automatically generated **Source code** archives on GitHub are intended for
+developers; they do not contain a ready-to-run application.
 
-## Build
+### System requirements
 
-Clone the repository, then build the pinned universal media dependency:
+| Requirement | Supported |
+| --- | --- |
+| macOS | Sonoma 14 or later |
+| Mac | Apple Silicon or Intel |
+| Distribution | Developer ID signed and Apple notarized |
+
+## Features
+
+- MKV, MP4, M4V, MOV, WebM, AVI, TS, and M2TS containers
+- Embedded audio tracks, subtitle tracks, and chapters
+- External SRT, ASS/SSA, WebVTT, and other libmpv-supported subtitles
+- VideoToolbox hardware decoding with software fallback
+- Playback queue with previous and next navigation
+- Resume positions and recent files using security-scoped bookmarks
+- Native menus, keyboard controls, drag and drop, and fullscreen
+- VoiceOver labels, system appearance, and macOS accessibility settings
+- Signed automatic updates through Sparkle
+
+Container support does not guarantee every possible codec combination. Format
+claims are qualified with the synthetic fixtures in `Tests/Fixtures` and the
+manual release checklist.
+
+## Keyboard shortcuts
+
+| Action | Shortcut |
+| --- | --- |
+| Open video | Command-O |
+| Play or pause | Space |
+| Seek backward or forward | Left or Right Arrow |
+| Enter fullscreen | Control-Command-F |
+| Exit fullscreen | Escape |
+| Settings | Command-, |
+| Close window | Command-W |
+
+Track selection, chapters, playback speed, scaling, and window commands are
+also available from the menu bar.
+
+## Privacy and security
+
+Playback stays on the Mac. The app accepts local files only, disables mpv user
+configuration and scripts, and builds FFmpeg without network protocols. Its
+network entitlement is used only for signed Sparkle update checks.
+
+The application runs in the App Sandbox with read-only access to files selected
+by the user. Release artifacts use hardened runtime, Developer ID signing,
+Apple notarization, and Sparkle EdDSA signatures.
+
+Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
+
+## Build from source
+
+### Requirements
+
+- macOS 14 or later
+- Xcode 26 or later with a Swift 6.2-capable toolchain
+- [Homebrew](https://brew.sh)
+- Meson, NASM, Ninja, pkg-config, Git, Ruby, and standard Unix build tools
+
+Select Xcode and install its required components:
 
 ```sh
-git clone https://github.com/youssefsz/mkv-player-native.git
-cd mkv-player-native
+sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+sudo xcodebuild -runFirstLaunch
+```
+
+Clone the repository and install the build-only tools:
+
+```sh
+git clone https://github.com/youssefsz/mkv-player-macos.git
+cd mkv-player-macos
+
 brew install meson nasm ninja pkg-config
 gem install xcodeproj --version 1.27.0 --user-install --no-document
-scripts/build-media-core.sh
+```
+
+Build MediaCore for the current Mac, generate the Xcode project, and open it:
+
+```sh
+scripts/build-media-core.sh --arch "$(uname -m)"
 ruby tools/generate_project.rb
 open MKVPlayer.xcodeproj
 ```
 
-The dependency build downloads only the HTTPS sources and Git commits pinned in
-[`scripts/media-core.lock`](scripts/media-core.lock), verifies their hashes,
-builds separate `arm64` and `x86_64` slices, combines them into one dynamic
-framework with its non-system dependencies folded in statically, and writes
-`Vendor/MediaCore.xcframework`. The binary is intentionally not committed.
+In Xcode, select the shared **MKVPlayer** scheme and **My Mac**, then press
+**Command-R**. The first MediaCore build compiles the pinned media stack from
+source and can take some time.
 
-Once maintainers publish a checksum-pinned MediaCore archive, contributors can
-use the faster bootstrap path:
+To produce a universal MediaCore framework for both Apple Silicon and Intel,
+omit the architecture option:
 
 ```sh
-scripts/bootstrap-media-core.sh
+scripts/build-media-core.sh
 ruby tools/generate_project.rb
 ```
 
-The bootstrap command fails closed if the repository has no published URL and
-SHA-256. Project regeneration after either dependency path adds the verified
-framework to the app's embed phase. You can audit the source inputs
-independently with:
+The build downloads only the HTTPS archives and Git commits pinned in
+[`scripts/media-core.lock`](scripts/media-core.lock), verifies their hashes, and
+writes `Vendor/MediaCore.xcframework`. No Homebrew media library is linked into
+the result.
 
-```sh
-scripts/verify-media-core-pins.sh
-```
-
-Build and test from the command line:
+## Tests
 
 ```sh
 swift test --package-path Packages/PlayerCore
 swift test --package-path Packages/MPVKit
+
 xcodebuild \
   -project MKVPlayer.xcodeproj \
   -scheme MKVPlayer \
@@ -92,47 +153,32 @@ xcodebuild \
   test
 ```
 
-## Keyboard shortcuts
+Playback integration tests use the small, redistributable fixtures committed in
+`Tests/Fixtures/Generated`. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full
+validation checklist.
 
-| Action | Shortcut |
+## Project layout
+
+| Path | Purpose |
 | --- | --- |
-| Open video | Command-O |
-| Play or pause | Space |
-| Seek backward/forward 5 seconds | Left/Right Arrow |
-| Enter fullscreen | Control-Command-F |
-| Exit fullscreen | Escape |
-| Settings | Command-, |
-| Close window | Command-W |
+| `App/MKVPlayer` | AppKit application and SwiftUI settings |
+| `Packages/PlayerCore` | Playback state, persistence, and engine-independent tests |
+| `Packages/MPVKit` | libmpv command, event, and OpenGL rendering bridge |
+| `scripts` | Reproducible media builds and release verification |
+| `Tests/Fixtures` | Synthetic playback fixtures |
+| `docs` | Architecture and release documentation |
 
-Playback, audio, subtitle, chapter, and window commands are also available in
-the menu bar so they remain discoverable and accessible.
+The threading, rendering, sandbox, and dependency boundaries are documented in
+[docs/architecture.md](docs/architecture.md).
 
-## Project structure
+## Contributing
 
-- `App/MKVPlayer` contains the AppKit application and its small SwiftUI settings
-  view.
-- `Packages/PlayerCore` contains engine-independent models, session state,
-  persistence, and tests.
-- `Packages/MPVKit` contains the libmpv command/event bridge and isolated OpenGL
-  render surface.
-- `scripts` contains reproducible dependency and release verification tooling.
-- `docs` contains architecture and maintainer release notes.
-
-See [`docs/architecture.md`](docs/architecture.md) for the threading, rendering,
-and sandbox boundaries.
-
-## Contributing and security
-
-Bug reports, focused pull requests, fixture descriptions, accessibility fixes,
-and compatibility test results are welcome. Read
-[`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request.
-
-Please do not open public issues for vulnerabilities. Follow
-[`SECURITY.md`](SECURITY.md) to report them privately.
+Focused bug fixes, accessibility improvements, compatibility results, and
+well-scoped features are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before
+opening an issue or pull request.
 
 ## License
 
-MKV Player is licensed under the
+MKV Player is available under the
 [GNU General Public License v3.0 or later](LICENSE). Dependency licenses and
-source locations are listed in
-[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+source locations are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

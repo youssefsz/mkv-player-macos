@@ -3,6 +3,28 @@
 
 require 'xcodeproj'
 require 'fileutils'
+require 'digest'
+
+# Xcodeproj begins new projects with random object identifiers. A stable
+# sequence keeps this entirely generated project byte-for-byte reproducible and
+# prevents unrelated UUID churn in reviews.
+module DeterministicProjectUUIDs
+  def generate_uuid
+    @mkv_player_uuid_sequence ||= 0
+    loop do
+      @mkv_player_uuid_sequence += 1
+      uuid = Digest::SHA256.hexdigest(
+        "MKVPlayer project object #{@mkv_player_uuid_sequence}"
+      ).slice(0, 24).upcase
+      next if generated_uuids.include?(uuid) || uuids.include?(uuid)
+
+      generated_uuids << uuid
+      return uuid
+    end
+  end
+end
+
+Xcodeproj::Project.prepend(DeterministicProjectUUIDs)
 
 ROOT = File.expand_path('..', __dir__)
 PROJECT_PATH = File.join(ROOT, 'MKVPlayer.xcodeproj')
@@ -20,6 +42,11 @@ project.root_object.attributes['LastUpgradeCheck'] = '2620'
 app_target = project.new_target(:application, 'MKVPlayer', :osx, '14.0')
 test_target = project.new_target(:unit_test_bundle, 'MKVPlayerTests', :osx, '14.0')
 test_target.add_dependency(app_target)
+
+# Keep the generated shared scheme aligned with PRODUCT_NAME. Xcode otherwise
+# repairs the stale MKVPlayer.app reference whenever the project is opened.
+app_target.product_reference.name = 'MKV Player.app'
+app_target.product_reference.path = 'MKV Player.app'
 
 def add_local_package(project, target, relative_path, product_name)
   package = project.root_object.package_references.find do |reference|
