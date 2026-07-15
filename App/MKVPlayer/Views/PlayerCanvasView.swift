@@ -1,20 +1,29 @@
 import AppKit
 
 final class PlayerCanvasView: NSView {
-    var onOpenVideo: ((URL) -> Void)?
+    var onOpenVideos: (([URL]) -> Void)?
     var onOpenPanel: (() -> Void)?
     var onAddSubtitle: ((URL) -> Void)?
+    var onInvalidFileDrop: ((String) -> Void)?
     var onChooseAnother: (() -> Void)?
     var onCopyDiagnostics: (() -> Void)?
     var onDismissRecoverableError: (() -> Void)?
     var onScrubbingChanged: ((Bool) -> Void)?
+    var onReplay: (() -> Void)?
+    var onSelectQueueItem: ((UUID) -> Void)?
+    var onRemoveQueueItem: ((UUID) -> Void)?
+    var onPreviousQueueItem: (() -> Void)?
+    var onNextQueueItem: (() -> Void)?
 
     let controls = PlaybackControlsView(frame: .zero)
     let resumeBanner = ResumeBannerView(frame: .zero)
 
     private let videoContainer = NSView(frame: .zero)
     private let emptyState = EmptyStateView(frame: .zero)
+    private let endState = EndStateView(frame: .zero)
     private let errorState = ErrorStateView(frame: .zero)
+    private let queueView = PlaybackQueueView(frame: .zero)
+    private let dropOverlay = DropOverlayView(frame: .zero)
     private let loadingIndicator = NSProgressIndicator(frame: .zero)
     private let temporarySpeedIndicator = PlaybackFeedbackView()
     private let seekIndicator = PlaybackFeedbackView()
@@ -23,6 +32,7 @@ final class PlayerCanvasView: NSView {
     private var hideResumeTimer: Timer?
     private var hideSeekIndicatorTimer: Timer?
     private var isScrubbing = false
+    private var isQueueVisible = false
     private var latestState = PlayerPresentationState()
 
     private static let videoExtensions: Set<String> = ["mkv", "mp4", "m4v", "mov", "webm", "avi", "ts", "m2ts"]
@@ -44,6 +54,11 @@ final class PlayerCanvasView: NSView {
         emptyState.onOpen = { [weak self] in self?.onOpenPanel?() }
         addSubview(emptyState)
 
+        endState.isHidden = true
+        endState.onReplay = { [weak self] in self?.onReplay?() }
+        endState.onOpenAnother = { [weak self] in self?.onOpenPanel?() }
+        addSubview(endState)
+
         errorState.isHidden = true
         errorState.onChooseAnother = { [weak self] in self?.onChooseAnother?() }
         errorState.onCopyDiagnostics = { [weak self] in self?.onCopyDiagnostics?() }
@@ -62,6 +77,8 @@ final class PlayerCanvasView: NSView {
         addSubview(seekIndicator)
 
         controls.alphaValue = 1
+        controls.onOpenVideo = { [weak self] in self?.onOpenPanel?() }
+        controls.onToggleQueue = { [weak self] in self?.toggleQueue() }
         controls.onScrubbingChanged = { [weak self] scrubbing in
             self?.isScrubbing = scrubbing
             self?.onScrubbingChanged?(scrubbing)
@@ -70,8 +87,19 @@ final class PlayerCanvasView: NSView {
         }
         addSubview(controls)
 
+        queueView.isHidden = true
+        queueView.onClose = { [weak self] in self?.setQueueVisible(false) }
+        queueView.onPrevious = { [weak self] in self?.onPreviousQueueItem?() }
+        queueView.onNext = { [weak self] in self?.onNextQueueItem?() }
+        queueView.onSelectItem = { [weak self] id in self?.onSelectQueueItem?(id) }
+        queueView.onRemoveItem = { [weak self] id in self?.onRemoveQueueItem?(id) }
+        addSubview(queueView)
+
         resumeBanner.isHidden = true
         addSubview(resumeBanner)
+
+        dropOverlay.isHidden = true
+        addSubview(dropOverlay)
 
         NSLayoutConstraint.activate([
             videoContainer.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -83,6 +111,11 @@ final class PlayerCanvasView: NSView {
             emptyState.trailingAnchor.constraint(equalTo: trailingAnchor),
             emptyState.topAnchor.constraint(equalTo: topAnchor),
             emptyState.bottomAnchor.constraint(equalTo: bottomAnchor),
+
+            endState.centerXAnchor.constraint(equalTo: centerXAnchor),
+            endState.centerYAnchor.constraint(equalTo: centerYAnchor),
+            endState.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 20),
+            endState.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -20),
 
             errorState.centerXAnchor.constraint(equalTo: centerXAnchor),
             errorState.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -103,8 +136,18 @@ final class PlayerCanvasView: NSView {
             controls.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 16),
             controls.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -16),
 
+            queueView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            queueView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            queueView.bottomAnchor.constraint(lessThanOrEqualTo: controls.topAnchor, constant: -12),
+            queueView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 16),
+
             resumeBanner.centerXAnchor.constraint(equalTo: centerXAnchor),
-            resumeBanner.topAnchor.constraint(equalTo: topAnchor, constant: 16)
+            resumeBanner.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+
+            dropOverlay.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            dropOverlay.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            dropOverlay.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            dropOverlay.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
         ])
     }
 
@@ -159,6 +202,10 @@ final class PlayerCanvasView: NSView {
             : NSColor.windowBackgroundColor.cgColor
         videoContainer.isHidden = !displaysVideo
         controls.render(state)
+        queueView.render(state)
+        if !state.hasQueue {
+            setQueueVisible(false)
+        }
         emptyState.isHidden = state.hasMedia || state.phase == .loading
         if !state.hasMedia {
             controls.isHidden = true
@@ -187,10 +234,19 @@ final class PlayerCanvasView: NSView {
             showControls(scheduleHide: false)
         }
 
+        if state.phase == .ended {
+            endState.present(filename: state.fileURL?.lastPathComponent)
+        } else {
+            endState.dismiss()
+        }
+
         if case .failed = state.phase {
             // Fatal errors are configured in the phase switch above.
         } else if let recoverableError = state.recoverableError {
-            errorState.present(message: recoverableError.message, kind: .recoverable)
+            errorState.present(
+                message: recoverableError.message,
+                kind: state.hasMedia ? .recoverable : .fatal
+            )
             showControls(scheduleHide: false)
         } else {
             errorState.isHidden = true
@@ -269,6 +325,14 @@ final class PlayerCanvasView: NSView {
         RunLoop.main.add(timer, forMode: .common)
     }
 
+    func prepareForMediaReplacement() {
+        hideResume()
+        setTemporaryFastPlaybackActive(false)
+        hideSeekIndicator()
+        endState.dismiss()
+        errorState.isHidden = true
+    }
+
     func showControls(scheduleHide: Bool) {
         guard latestState.hasMedia else { return }
         hideControlsTimer?.invalidate()
@@ -286,6 +350,7 @@ final class PlayerCanvasView: NSView {
         hideControlsTimer?.invalidate()
         guard latestState.isPlaying,
               !isScrubbing,
+              !isQueueVisible,
               !NSWorkspace.shared.isVoiceOverEnabled,
               !controlsContainsFirstResponder,
               !controls.hasActiveMenu else { return }
@@ -301,6 +366,7 @@ final class PlayerCanvasView: NSView {
     private func hideControls() {
         guard latestState.isPlaying,
               !isScrubbing,
+              !isQueueVisible,
               !NSWorkspace.shared.isVoiceOverEnabled,
               !controlsContainsFirstResponder,
               !controls.hasActiveMenu else { return }
@@ -336,29 +402,91 @@ final class PlayerCanvasView: NSView {
     }
 
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
-        acceptedURL(from: sender) == nil ? [] : .copy
+        updateDropOverlay(for: sender)
+    }
+
+    override func draggingUpdated(_ sender: NSDraggingInfo) -> NSDragOperation {
+        updateDropOverlay(for: sender)
+    }
+
+    override func draggingExited(_ sender: NSDraggingInfo?) {
+        dropOverlay.isHidden = true
     }
 
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
-        guard let url = acceptedURL(from: sender) else { return false }
-        let ext = url.pathExtension.lowercased()
-        if Self.subtitleExtensions.contains(ext), latestState.canControlPlayback {
+        defer { dropOverlay.isHidden = true }
+        switch dragPayload(from: sender) {
+        case let .videos(urls):
+            onOpenVideos?(urls)
+            return true
+        case let .subtitle(url):
             onAddSubtitle?(url)
-        } else {
-            onOpenVideo?(url)
+            return true
+        case let .invalid(message):
+            onInvalidFileDrop?(message)
+            return false
         }
-        return true
     }
 
-    private func acceptedURL(from sender: NSDraggingInfo) -> URL? {
-        let options: [NSPasteboard.ReadingOptionKey: Any] = [.urlReadingFileURLsOnly: true]
-        let urls = sender.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: options) as? [URL]
-        return urls?.first { url in
-            let ext = url.pathExtension.lowercased()
-            return Self.videoExtensions.contains(ext)
-                || (latestState.canControlPlayback && Self.subtitleExtensions.contains(ext))
+    override func concludeDragOperation(_ sender: NSDraggingInfo?) {
+        dropOverlay.isHidden = true
+    }
+
+    private func updateDropOverlay(for sender: NSDraggingInfo) -> NSDragOperation {
+        switch dragPayload(from: sender) {
+        case let .videos(urls):
+            let message = urls.count == 1
+                ? "Drop video to open"
+                : "Drop \(urls.count) videos to create a queue"
+            dropOverlay.present(message: message, isValid: true)
+            return .copy
+        case .subtitle:
+            dropOverlay.present(message: "Drop subtitle to add", isValid: true)
+            return .copy
+        case let .invalid(message):
+            dropOverlay.present(message: message, isValid: false)
+            return []
         }
     }
+
+    private func dragPayload(from sender: NSDraggingInfo) -> DragPayload {
+        let options: [NSPasteboard.ReadingOptionKey: Any] = [.urlReadingFileURLsOnly: true]
+        let urls = sender.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: options) as? [URL]
+        guard let urls, !urls.isEmpty else {
+            return .invalid("Drop a video file to open")
+        }
+
+        if urls.count == 1,
+           let url = urls.first,
+           Self.subtitleExtensions.contains(url.pathExtension.lowercased()) {
+            return latestState.canControlPlayback
+                ? .subtitle(url)
+                : .invalid("Open a video before adding subtitles")
+        }
+
+        guard urls.allSatisfy({ Self.videoExtensions.contains($0.pathExtension.lowercased()) }) else {
+            return .invalid("This file type can’t be played")
+        }
+        return .videos(urls)
+    }
+
+    private func toggleQueue() {
+        setQueueVisible(!isQueueVisible)
+    }
+
+    private func setQueueVisible(_ visible: Bool) {
+        isQueueVisible = visible && latestState.hasQueue
+        queueView.isHidden = !isQueueVisible
+        if isQueueVisible {
+            showControls(scheduleHide: false)
+        }
+    }
+}
+
+private enum DragPayload {
+    case videos([URL])
+    case subtitle(URL)
+    case invalid(String)
 }
 
 private final class PlaybackFeedbackView: NSVisualEffectView {

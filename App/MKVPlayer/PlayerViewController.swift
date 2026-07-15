@@ -3,8 +3,9 @@ import AppKit
 @MainActor
 protocol PlayerViewControllerDelegate: AnyObject {
     func playerViewControllerDidRequestOpenPanel(_ controller: PlayerViewController)
-    func playerViewController(_ controller: PlayerViewController, didOpen url: URL)
+    func playerViewController(_ controller: PlayerViewController, didOpen urls: [URL])
     func playerViewController(_ controller: PlayerViewController, didAddSubtitle url: URL)
+    func playerViewController(_ controller: PlayerViewController, didRejectDrop message: String)
     func playerViewControllerDidRequestTogglePlayback(_ controller: PlayerViewController)
     func playerViewController(_ controller: PlayerViewController, didRequestRelativeSeek offset: TimeInterval)
     func playerViewControllerDidBeginScrubbing(_ controller: PlayerViewController)
@@ -18,6 +19,11 @@ protocol PlayerViewControllerDelegate: AnyObject {
     func playerViewController(_ controller: PlayerViewController, didSelectChapter index: Int)
     func playerViewControllerDidRequestFullScreen(_ controller: PlayerViewController)
     func playerViewControllerDidRequestRestart(_ controller: PlayerViewController)
+    func playerViewControllerDidRequestReplay(_ controller: PlayerViewController)
+    func playerViewController(_ controller: PlayerViewController, didSelectQueueItem id: UUID)
+    func playerViewController(_ controller: PlayerViewController, didRemoveQueueItem id: UUID)
+    func playerViewControllerDidRequestPreviousQueueItem(_ controller: PlayerViewController)
+    func playerViewControllerDidRequestNextQueueItem(_ controller: PlayerViewController)
     func playerViewControllerDidDismissRecoverableError(_ controller: PlayerViewController)
 }
 
@@ -65,18 +71,26 @@ final class PlayerViewController: NSViewController {
         canvas.showKeyboardSeekFeedback(offset: offset)
     }
 
+    func prepareForMediaReplacement() {
+        canvas.prepareForMediaReplacement()
+    }
+
     private func wireActions() {
         canvas.onOpenPanel = { [weak self] in
             guard let self else { return }
             self.delegate?.playerViewControllerDidRequestOpenPanel(self)
         }
-        canvas.onOpenVideo = { [weak self] url in
+        canvas.onOpenVideos = { [weak self] urls in
             guard let self else { return }
-            self.delegate?.playerViewController(self, didOpen: url)
+            self.delegate?.playerViewController(self, didOpen: urls)
         }
         canvas.onAddSubtitle = { [weak self] url in
             guard let self else { return }
             self.delegate?.playerViewController(self, didAddSubtitle: url)
+        }
+        canvas.onInvalidFileDrop = { [weak self] message in
+            guard let self else { return }
+            self.delegate?.playerViewController(self, didRejectDrop: message)
         }
         canvas.onChooseAnother = { [weak self] in
             guard let self else { return }
@@ -86,6 +100,26 @@ final class PlayerViewController: NSViewController {
         canvas.onDismissRecoverableError = { [weak self] in
             guard let self else { return }
             self.delegate?.playerViewControllerDidDismissRecoverableError(self)
+        }
+        canvas.onReplay = { [weak self] in
+            guard let self else { return }
+            self.delegate?.playerViewControllerDidRequestReplay(self)
+        }
+        canvas.onSelectQueueItem = { [weak self] id in
+            guard let self else { return }
+            self.delegate?.playerViewController(self, didSelectQueueItem: id)
+        }
+        canvas.onRemoveQueueItem = { [weak self] id in
+            guard let self else { return }
+            self.delegate?.playerViewController(self, didRemoveQueueItem: id)
+        }
+        canvas.onPreviousQueueItem = { [weak self] in
+            guard let self else { return }
+            self.delegate?.playerViewControllerDidRequestPreviousQueueItem(self)
+        }
+        canvas.onNextQueueItem = { [weak self] in
+            guard let self else { return }
+            self.delegate?.playerViewControllerDidRequestNextQueueItem(self)
         }
         canvas.controls.onTogglePlayback = { [weak self] in
             guard let self else { return }

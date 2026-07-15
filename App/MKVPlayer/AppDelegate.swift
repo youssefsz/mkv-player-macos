@@ -20,7 +20,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     private var didFinishLaunching = false
     private var shouldPresentPlayerWhenReady = true
     private var shouldOpenPanelWhenReady = false
-    private var pendingVideoURL: URL?
+    private var pendingVideoURLs: [URL] = []
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         logger.notice("applicationWillFinishLaunching")
@@ -59,16 +59,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
 
     func application(_ application: NSApplication, open urls: [URL]) {
         logger.debug("Received \(urls.count) file-open URL(s)")
-        guard let videoURL = urls.first(where: Self.isSupportedVideo) else {
+        let videoURLs = urls.filter(Self.isSupportedVideo)
+        guard !videoURLs.isEmpty else {
             logger.debug("The file-open request did not contain a supported video")
             return
         }
         logger.notice("Opening a video from Launch Services")
         shouldPresentPlayerWhenReady = true
         if let playerWindowController {
-            playerWindowController.open(videoURL)
+            playerWindowController.open(videoURLs)
         } else {
-            pendingVideoURL = videoURL
+            pendingVideoURLs = videoURLs
             startPlayerBootstrap()
         }
     }
@@ -263,10 +264,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
                 recentURLs: controller.recentURLs
             )
 
-            if let pendingVideoURL {
-                self.pendingVideoURL = nil
+            if !pendingVideoURLs.isEmpty {
+                let urls = pendingVideoURLs
+                pendingVideoURLs = []
                 shouldOpenPanelWhenReady = false
-                controller.open(pendingVideoURL)
+                controller.open(urls)
             } else if shouldOpenPanelWhenReady {
                 shouldOpenPanelWhenReady = false
                 controller.openPanel()

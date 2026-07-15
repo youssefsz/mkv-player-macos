@@ -5,6 +5,11 @@ import OSLog
 import PlayerCore
 import UniformTypeIdentifiers
 
+private struct PlaybackQueueItem: Equatable {
+    let id: UUID
+    let url: URL
+}
+
 @MainActor
 final class PlayerWindowController: NSWindowController {
     private static let videoExtensions = ["mkv", "mp4", "m4v", "mov", "webm", "avi", "ts", "m2ts"]
@@ -27,7 +32,14 @@ final class PlayerWindowController: NSWindowController {
     private var recoverableCommandError: PlaybackError?
     private var operationGeneration: UInt64 = 0
     private var selectedPlaybackRate: Double = 1
+    private var preferredVolume: Double = 1
+    private var preferredMuted = false
+    private var preferredVideoScaling: VideoScalingMode = .fit
     private var isTemporaryFastPlaybackActive = false
+    private var playbackQueue: [PlaybackQueueItem] = []
+    private var currentQueueIndex: Int?
+    private var activeQueueLoadID: UUID?
+    private var lastObservedPhase: PlayerPresentationPhase = .idle
     private(set) var recentURLs: [URL] = []
     private(set) var presentationState = PlayerPresentationState()
 
@@ -91,11 +103,12 @@ final class PlayerWindowController: NSWindowController {
         panel.title = "Open Video"
         panel.prompt = "Open"
         panel.canChooseDirectories = false
-        panel.allowsMultipleSelection = false
+        panel.allowsMultipleSelection = true
         panel.allowedContentTypes = Self.videoExtensions.compactMap { UTType(filenameExtension: $0) }
         panel.beginSheetModal(for: window) { [weak self] response in
-            guard response == .OK, let url = panel.url else { return }
-            Task { @MainActor [weak self] in self?.open(url) }
+            guard response == .OK, !panel.urls.isEmpty else { return }
+            let urls = panel.urls
+            Task { @MainActor [weak self] in self?.open(urls) }
         }
     }
 
@@ -114,33 +127,126 @@ final class PlayerWindowController: NSWindowController {
     }
 
     func open(_ url: URL) {
-        guard Self.videoExtensions.contains(url.pathExtension.lowercased()) else {
-            NSSound.beep()
+        open([url])
+    }
+
+    func open(_ urls: [URL]) {
+        guard let error = validateVideoURLs(urls) else {
+            playbackQueue = urls.map { PlaybackQueueItem(id: UUID(), url: $0) }
+            currentQueueIndex = nil
+            startQueueItem(at: 0, allowResume: true)
             return
         }
+        presentRecoverableError(error)
+    }
+
+    private func startQueueItem(
+        at index: Int,
+        allowResume: Bool,
+        autoplayOverride: Bool? = nil
+    ) {
+        guard playbackQueue.indices.contains(index) else { return }
+        let item = playbackQueue[index]
+        let previousURL = session.currentMediaURL?.standardizedFileURL
+        let shouldResume = allowResume && previousURL != item.url.standardizedFileURL
+        let loadID = UUID()
+        activeQueueLoadID = loadID
+        currentQueueIndex = index
 
         recoverableCommandError = nil
+        playerViewController.prepareForMediaReplacement()
+        if isTemporaryFastPlaybackActive {
+            isTemporaryFastPlaybackActive = false
+            playerViewController.setTemporaryFastPlaybackActive(false)
+        }
 
-        recentURLs.removeAll { $0.standardizedFileURL == url.standardizedFileURL }
-        recentURLs.insert(url, at: 0)
+        recentURLs.removeAll { $0.standardizedFileURL == item.url.standardizedFileURL }
+        recentURLs.insert(item.url, at: 0)
         recentURLs = Array(recentURLs.prefix(10))
-        recentFilesController.noteOpened(url)
+        recentFilesController.noteOpened(item.url)
         notifyPresentationChanged()
-        NSDocumentController.shared.noteNewRecentDocumentURL(url)
+        NSDocumentController.shared.noteNewRecentDocumentURL(item.url)
         present()
 
-        perform { [session, preferences] in
-            try await session.open(
-                url,
-                autoplay: preferences.autoplays,
-                allowResume: preferences.resumesPlayback
-            )
+        let volume = preferredVolume
+        let muted = preferredMuted
+        let rate = selectedPlaybackRate
+        let scaling = preferredVideoScaling
+        perform { [weak self, session, preferences] in
+            do {
+                try await session.open(
+                    item.url,
+                    autoplay: autoplayOverride ?? preferences.autoplays,
+                    allowResume: shouldResume && preferences.resumesPlayback
+                )
+                guard self?.activeQueueLoadID == loadID else { return }
+                try await session.setVolume(volume)
+                guard self?.activeQueueLoadID == loadID else { return }
+                try await session.setMuted(muted)
+                guard self?.activeQueueLoadID == loadID else { return }
+                try await session.setRate(rate)
+                guard self?.activeQueueLoadID == loadID else { return }
+                try await session.setVideoScaling(scaling)
+                if self?.activeQueueLoadID == loadID {
+                    self?.activeQueueLoadID = nil
+                }
+            } catch {
+                if self?.activeQueueLoadID == loadID {
+                    self?.activeQueueLoadID = nil
+                }
+                throw error
+            }
         }
 
         Task { [weak self] in
             try? await Task.sleep(for: .seconds(1))
-            await self?.reloadRecentFiles(keeping: url)
+            await self?.reloadRecentFiles(keeping: item.url)
         }
+    }
+
+    private func validateVideoURLs(_ urls: [URL]) -> PlaybackError? {
+        guard !urls.isEmpty else {
+            return PlaybackError(
+                code: .unsupportedMedia,
+                message: "No video was selected.",
+                recoverySuggestion: "Choose a video file."
+            )
+        }
+
+        for url in urls {
+            guard url.isFileURL,
+                  !url.lastPathComponent.isEmpty,
+                  Self.videoExtensions.contains(url.pathExtension.lowercased())
+            else {
+                return PlaybackError(
+                    code: .unsupportedMedia,
+                    message: "“\(url.lastPathComponent)” is not a supported video file.",
+                    recoverySuggestion: "Choose an MKV, MP4, MOV, WebM, AVI, TS, or M2TS video."
+                )
+            }
+
+            var isDirectory = ObjCBool(false)
+            guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory),
+                  !isDirectory.boolValue
+            else {
+                return PlaybackError(
+                    code: .fileNotFound,
+                    message: "“\(url.lastPathComponent)” could not be found.",
+                    recoverySuggestion: "Choose another video."
+                )
+            }
+
+            if let attributes = try? FileManager.default.attributesOfItem(atPath: url.path),
+               let size = attributes[.size] as? NSNumber,
+               size.int64Value == 0 {
+                return PlaybackError(
+                    code: .corruptMedia,
+                    message: "“\(url.lastPathComponent)” is empty and can’t be played.",
+                    recoverySuggestion: "Choose another video."
+                )
+            }
+        }
+        return nil
     }
 
     func addSubtitle(_ url: URL) {
@@ -169,11 +275,14 @@ final class PlayerWindowController: NSWindowController {
     }
 
     func setVolume(_ volume: Double) {
+        preferredVolume = min(max(volume / 100, 0), 1)
         perform { [session] in try await session.setVolume(volume / 100) }
     }
 
     func toggleMute() {
-        perform { [session] in try await session.setMuted(!session.snapshot.isMuted) }
+        preferredMuted.toggle()
+        let muted = preferredMuted
+        perform { [session] in try await session.setMuted(muted) }
     }
 
     func selectAudioTrack(_ id: Int64) {
@@ -213,6 +322,7 @@ final class PlayerWindowController: NSWindowController {
     }
 
     func setVideoScaling(_ mode: VideoScalingMode) {
+        preferredVideoScaling = mode
         perform { [weak self, session] in
             try await session.setVideoScaling(mode)
             if mode == .actualSize { self?.resizeToNaturalVideoSize() }
@@ -269,9 +379,44 @@ final class PlayerWindowController: NSWindowController {
             error: session.lastError
         )
         // The controls and app menu continue to show the user's persistent
-        // selection while Space temporarily overrides the engine rate.
+        // selections while a replacement resets the session snapshot and
+        // Space temporarily overrides the engine rate.
         state.rate = selectedPlaybackRate
+        state.volume = preferredVolume * 100
+        state.isMuted = preferredMuted
+        state.videoScaling = switch preferredVideoScaling {
+        case .fit: .fit
+        case .fill: .fill
+        case .actualSize: .actualSize
+        }
         state.isFullScreen = window?.styleMask.contains(.fullScreen) == true
+        let transitionedToEnd = state.phase == .ended && lastObservedPhase != .ended
+        lastObservedPhase = state.phase
+
+        if transitionedToEnd,
+           activeQueueLoadID == nil,
+           let currentQueueIndex,
+           playbackQueue.indices.contains(currentQueueIndex + 1) {
+            startQueueItem(
+                at: currentQueueIndex + 1,
+                allowResume: false,
+                autoplayOverride: true
+            )
+            state.phase = .loading
+            state.position = 0
+            state.duration = 0
+            state.isSeekable = false
+        } else if activeQueueLoadID != nil, state.phase == .ended {
+            state.phase = .loading
+        }
+
+        state.queueItems = playbackQueue.enumerated().map { index, item in
+            PlayerQueueItemPresentation(
+                id: item.id,
+                url: item.url,
+                isCurrent: index == currentQueueIndex
+            )
+        }
         if session.snapshot.phase != .failed, let recoverableCommandError {
             let message = [
                 recoverableCommandError.message,
@@ -301,6 +446,53 @@ final class PlayerWindowController: NSWindowController {
         window?.representedURL = state.fileURL
         activityController.setPlaying(state.isPlaying)
         notifyPresentationChanged()
+    }
+
+    private func selectQueueItem(id: UUID) {
+        guard let index = playbackQueue.firstIndex(where: { $0.id == id }),
+              index != currentQueueIndex
+        else { return }
+        startQueueItem(at: index, allowResume: false, autoplayOverride: true)
+    }
+
+    private func removeQueueItem(id: UUID) {
+        guard let removedIndex = playbackQueue.firstIndex(where: { $0.id == id }) else { return }
+        let removedCurrentItem = removedIndex == currentQueueIndex
+        playbackQueue.remove(at: removedIndex)
+
+        guard !playbackQueue.isEmpty else {
+            currentQueueIndex = nil
+            activeQueueLoadID = nil
+            perform { [session] in await session.closeMedia() }
+            renderCurrentState()
+            return
+        }
+
+        if removedCurrentItem {
+            currentQueueIndex = nil
+            startQueueItem(
+                at: min(removedIndex, playbackQueue.count - 1),
+                allowResume: false,
+                autoplayOverride: true
+            )
+        } else {
+            if let currentQueueIndex, removedIndex < currentQueueIndex {
+                self.currentQueueIndex = currentQueueIndex - 1
+            }
+            renderCurrentState()
+        }
+    }
+
+    private func playPreviousQueueItem() {
+        guard let currentQueueIndex, currentQueueIndex > 0 else { return }
+        startQueueItem(at: currentQueueIndex - 1, allowResume: false, autoplayOverride: true)
+    }
+
+    private func playNextQueueItem() {
+        guard let currentQueueIndex,
+              playbackQueue.indices.contains(currentQueueIndex + 1)
+        else { return }
+        startQueueItem(at: currentQueueIndex + 1, allowResume: false, autoplayOverride: true)
     }
 
     private func notifyPresentationChanged() {
@@ -380,6 +572,9 @@ final class PlayerWindowController: NSWindowController {
 
 extension PlayerWindowController: NSWindowDelegate {
     func windowShouldClose(_ sender: NSWindow) -> Bool {
+        playbackQueue = []
+        currentQueueIndex = nil
+        activeQueueLoadID = nil
         Task { [session] in await session.closeMedia() }
         return true
     }
@@ -416,8 +611,17 @@ extension PlayerWindowController: PlayerWindowKeyboardDelegate {
 
 extension PlayerWindowController: PlayerViewControllerDelegate {
     func playerViewControllerDidRequestOpenPanel(_ controller: PlayerViewController) { openPanel() }
-    func playerViewController(_ controller: PlayerViewController, didOpen url: URL) { open(url) }
+    func playerViewController(_ controller: PlayerViewController, didOpen urls: [URL]) { open(urls) }
     func playerViewController(_ controller: PlayerViewController, didAddSubtitle url: URL) { addSubtitle(url) }
+    func playerViewController(_ controller: PlayerViewController, didRejectDrop message: String) {
+        presentRecoverableError(
+            PlaybackError(
+                code: .unsupportedMedia,
+                message: message,
+                recoverySuggestion: "Drop a supported video file instead."
+            )
+        )
+    }
     func playerViewControllerDidRequestTogglePlayback(_ controller: PlayerViewController) { togglePlayback() }
     func playerViewController(_ controller: PlayerViewController, didRequestRelativeSeek offset: TimeInterval) { seek(by: offset) }
     func playerViewControllerDidBeginScrubbing(_ controller: PlayerViewController) { session.beginScrubbing() }
@@ -436,6 +640,21 @@ extension PlayerWindowController: PlayerViewControllerDelegate {
     func playerViewControllerDidRequestFullScreen(_ controller: PlayerViewController) { toggleFullScreen() }
     func playerViewControllerDidRequestRestart(_ controller: PlayerViewController) {
         perform { [session] in try await session.restartFromBeginning() }
+    }
+    func playerViewControllerDidRequestReplay(_ controller: PlayerViewController) {
+        perform { [session] in try await session.play() }
+    }
+    func playerViewController(_ controller: PlayerViewController, didSelectQueueItem id: UUID) {
+        selectQueueItem(id: id)
+    }
+    func playerViewController(_ controller: PlayerViewController, didRemoveQueueItem id: UUID) {
+        removeQueueItem(id: id)
+    }
+    func playerViewControllerDidRequestPreviousQueueItem(_ controller: PlayerViewController) {
+        playPreviousQueueItem()
+    }
+    func playerViewControllerDidRequestNextQueueItem(_ controller: PlayerViewController) {
+        playNextQueueItem()
     }
     func playerViewControllerDidDismissRecoverableError(_ controller: PlayerViewController) {
         dismissRecoverableError()

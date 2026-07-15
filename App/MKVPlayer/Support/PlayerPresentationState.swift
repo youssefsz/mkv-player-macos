@@ -19,6 +19,14 @@ struct PlayerRecoverableErrorPresentation: Equatable, Sendable {
     let diagnostics: String
 }
 
+struct PlayerQueueItemPresentation: Equatable, Sendable {
+    let id: UUID
+    let url: URL
+    let isCurrent: Bool
+
+    var title: String { url.lastPathComponent }
+}
+
 enum PlayerPresentationPhase: Equatable, Sendable {
     case idle
     case loading
@@ -53,10 +61,18 @@ struct PlayerPresentationState: Equatable, Sendable {
     var audioTracks: [PlayerTrackOption] = []
     var subtitleTracks: [PlayerTrackOption] = []
     var chapters: [PlayerChapterOption] = []
+    var queueItems: [PlayerQueueItemPresentation] = []
     var recoverableError: PlayerRecoverableErrorPresentation?
     var diagnostics: String?
 
     var hasMedia: Bool { fileURL != nil }
+    var hasQueue: Bool { queueItems.count > 1 }
+    var currentQueueIndex: Int? { queueItems.firstIndex(where: \.isCurrent) }
+    var canPlayPreviousQueueItem: Bool { (currentQueueIndex ?? 0) > 0 }
+    var canPlayNextQueueItem: Bool {
+        guard let currentQueueIndex else { return false }
+        return queueItems.indices.contains(currentQueueIndex + 1)
+    }
     var isPlaying: Bool { phase == .playing }
     var canControlPlayback: Bool {
         switch phase {

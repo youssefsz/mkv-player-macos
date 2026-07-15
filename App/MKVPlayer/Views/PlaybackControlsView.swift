@@ -1,6 +1,8 @@
 import AppKit
 
 final class PlaybackControlsView: NSVisualEffectView {
+    var onOpenVideo: (() -> Void)?
+    var onToggleQueue: (() -> Void)?
     var onTogglePlayback: (() -> Void)?
     var onSeekRelative: ((TimeInterval) -> Void)?
     var onSeekAbsolute: ((TimeInterval) -> Void)?
@@ -17,6 +19,11 @@ final class PlaybackControlsView: NSVisualEffectView {
     private let seekSlider = TrackingSlider(value: 0, minValue: 0, maxValue: 1)
     private let elapsedLabel = NSTextField(labelWithString: "0:00")
     private let remainingLabel = NSTextField(labelWithString: "–0:00")
+    private let openButton = ActionButton(
+        symbolName: "folder",
+        accessibilityLabel: "Open Video",
+        toolTip: "Open Video… (Command-O)"
+    )
     private let backButton = ActionButton(symbolName: "gobackward.10", accessibilityLabel: "Back 10 seconds", toolTip: "Back 10 Seconds")
     private let playButton = ActionButton(symbolName: "play.fill", accessibilityLabel: "Play", toolTip: "Play or Pause")
     private let forwardButton = ActionButton(symbolName: "goforward.10", accessibilityLabel: "Forward 10 seconds", toolTip: "Forward 10 Seconds")
@@ -30,6 +37,11 @@ final class PlaybackControlsView: NSVisualEffectView {
         symbolName: "arrow.up.left.and.arrow.down.right",
         accessibilityLabel: "Enter Full Screen",
         toolTip: "Enter Full Screen"
+    )
+    private let queueButton = ActionButton(
+        symbolName: "list.bullet",
+        accessibilityLabel: "Show Queue",
+        toolTip: "Show Queue"
     )
 
     private var playbackState = PlayerPresentationState()
@@ -71,6 +83,8 @@ final class PlaybackControlsView: NSVisualEffectView {
         timeRow.distribution = .fill
         timeRow.translatesAutoresizingMaskIntoConstraints = false
 
+        openButton.handler = { [weak self] in self?.onOpenVideo?() }
+        queueButton.handler = { [weak self] in self?.onToggleQueue?() }
         backButton.handler = { [weak self] in self?.onSeekRelative?(-10) }
         playButton.handler = { [weak self] in self?.onTogglePlayback?() }
         forwardButton.handler = { [weak self] in self?.onSeekRelative?(10) }
@@ -87,6 +101,7 @@ final class PlaybackControlsView: NSVisualEffectView {
         configurePopUps()
 
         let transport = NSStackView(views: [
+            openButton,
             chapterButton,
             audioButton,
             subtitleButton,
@@ -98,6 +113,7 @@ final class PlaybackControlsView: NSVisualEffectView {
             muteButton,
             volumeSlider,
             speedButton,
+            queueButton,
             fullScreenButton
         ])
         transport.orientation = .horizontal
@@ -135,6 +151,9 @@ final class PlaybackControlsView: NSVisualEffectView {
             || playbackState.audioTracks != newState.audioTracks
             || playbackState.subtitleTracks != newState.subtitleTracks
         playbackState = newState
+        queueButton.isHidden = !newState.hasQueue
+        queueButton.setAccessibilityLabel("Show Queue, \(newState.queueItems.count) videos")
+        queueButton.toolTip = "Show Queue (\(newState.queueItems.count))"
         if !isScrubbing {
             seekSlider.maxValue = max(newState.duration, 1)
             seekSlider.doubleValue = min(max(newState.position, 0), seekSlider.maxValue)

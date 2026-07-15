@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1393646BFDBD68CB82F4D2B3"
+               BlueprintIdentifier = "AAB980EB176FBB40F0ECBAB1"
                BuildableName = "MKVPlayer.app"
                BlueprintName = "MKVPlayer"
                ReferencedContainer = "container:MKVPlayer.xcodeproj">
@@ -30,7 +30,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1393646BFDBD68CB82F4D2B3"
+            BlueprintIdentifier = "AAB980EB176FBB40F0ECBAB1"
             BuildableName = "MKVPlayer.app"
             BlueprintName = "MKVPlayer"
             ReferencedContainer = "container:MKVPlayer.xcodeproj">
@@ -41,7 +41,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "498657EF437E490AABDC788D"
+               BlueprintIdentifier = "414A3A729B2996206E791A06"
                BuildableName = "MKVPlayerTests.xctest"
                BlueprintName = "MKVPlayerTests"
                ReferencedContainer = "container:MKVPlayer.xcodeproj">
@@ -63,7 +63,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1393646BFDBD68CB82F4D2B3"
+            BlueprintIdentifier = "AAB980EB176FBB40F0ECBAB1"
             BuildableName = "MKVPlayer.app"
             BlueprintName = "MKVPlayer"
             ReferencedContainer = "container:MKVPlayer.xcodeproj">
@@ -80,7 +80,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1393646BFDBD68CB82F4D2B3"
+            BlueprintIdentifier = "AAB980EB176FBB40F0ECBAB1"
             BuildableName = "MKVPlayer.app"
             BlueprintName = "MKVPlayer"
             ReferencedContainer = "container:MKVPlayer.xcodeproj">

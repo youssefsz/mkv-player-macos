@@ -249,6 +249,108 @@ final class PlayerPresentationTests: XCTestCase {
     }
 
     @MainActor
+    func testTransportOpenActionAndQueueDisclosureFollowPresentation() throws {
+        let controls = PlaybackControlsView(frame: .zero)
+        var openRequests = 0
+        var queueRequests = 0
+        controls.onOpenVideo = { openRequests += 1 }
+        controls.onToggleQueue = { queueRequests += 1 }
+
+        let open = try XCTUnwrap(descendants(of: controls, as: ActionButton.self).first {
+            $0.toolTip == "Open Video… (Command-O)"
+        })
+        _ = open.sendAction(open.action, to: open.target)
+        XCTAssertEqual(openRequests, 1)
+
+        let queue = try XCTUnwrap(descendants(of: controls, as: ActionButton.self).first {
+            $0.accessibilityLabel()?.hasPrefix("Show Queue") == true
+        })
+        controls.render(PlayerPresentationState())
+        XCTAssertTrue(queue.isHidden)
+
+        let firstID = UUID()
+        let secondID = UUID()
+        let queued = PlayerPresentationState(
+            phase: .playing,
+            fileURL: URL(fileURLWithPath: "/tmp/first.mkv"),
+            queueItems: [
+                PlayerQueueItemPresentation(
+                    id: firstID,
+                    url: URL(fileURLWithPath: "/tmp/first.mkv"),
+                    isCurrent: true
+                ),
+                PlayerQueueItemPresentation(
+                    id: secondID,
+                    url: URL(fileURLWithPath: "/tmp/second.mp4"),
+                    isCurrent: false
+                )
+            ]
+        )
+        controls.render(queued)
+
+        XCTAssertFalse(queue.isHidden)
+        XCTAssertEqual(queue.accessibilityLabel(), "Show Queue, 2 videos")
+        _ = queue.sendAction(queue.action, to: queue.target)
+        XCTAssertEqual(queueRequests, 1)
+    }
+
+    func testQueueNavigationAvailabilityTracksCurrentItem() {
+        let first = PlayerQueueItemPresentation(
+            id: UUID(),
+            url: URL(fileURLWithPath: "/tmp/first.mkv"),
+            isCurrent: false
+        )
+        let second = PlayerQueueItemPresentation(
+            id: UUID(),
+            url: URL(fileURLWithPath: "/tmp/second.mkv"),
+            isCurrent: true
+        )
+        let third = PlayerQueueItemPresentation(
+            id: UUID(),
+            url: URL(fileURLWithPath: "/tmp/third.mkv"),
+            isCurrent: false
+        )
+        let state = PlayerPresentationState(queueItems: [first, second, third])
+
+        XCTAssertTrue(state.hasQueue)
+        XCTAssertEqual(state.currentQueueIndex, 1)
+        XCTAssertTrue(state.canPlayPreviousQueueItem)
+        XCTAssertTrue(state.canPlayNextQueueItem)
+    }
+
+    @MainActor
+    func testEndedStatePresentsReplayAndOpenAnotherActions() throws {
+        let canvas = PlayerCanvasView(frame: NSRect(x: 0, y: 0, width: 800, height: 500))
+        var replayRequests = 0
+        var openRequests = 0
+        canvas.onReplay = { replayRequests += 1 }
+        canvas.onOpenPanel = { openRequests += 1 }
+        canvas.render(PlayerPresentationState(
+            phase: .ended,
+            fileURL: URL(fileURLWithPath: "/tmp/finished.mkv"),
+            position: 120,
+            duration: 120,
+            isSeekable: true
+        ))
+
+        let endState = try XCTUnwrap(descendants(of: canvas, as: EndStateView.self).first)
+        XCTAssertFalse(endState.isHidden)
+        XCTAssertEqual(endState.accessibilityLabel(), "Finished playing finished.mkv")
+
+        let replay = try XCTUnwrap(descendants(of: endState, as: NSButton.self).first {
+            $0.title == "Replay"
+        })
+        let openAnother = try XCTUnwrap(descendants(of: endState, as: NSButton.self).first {
+            $0.title == "Open Another…"
+        })
+        _ = replay.sendAction(replay.action, to: replay.target)
+        _ = openAnother.sendAction(openAnother.action, to: openAnother.target)
+
+        XCTAssertEqual(replayRequests, 1)
+        XCTAssertEqual(openRequests, 1)
+    }
+
+    @MainActor
     func testPlaybackSpeedSelectorOffersCommonRatesAndShowsSelection() throws {
         let controls = PlaybackControlsView(frame: .zero)
         let speed = try XCTUnwrap(descendants(of: controls, as: ActionPopUpButton.self).first {
