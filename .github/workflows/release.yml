@@ -608,31 +608,45 @@ jobs:
             git -C "$pages_directory" rm -rf --ignore-unmatch .
           fi
 
+          appcast_needs_update=true
           current_appcast="$pages_directory/appcast.xml"
           if [[ -f "$current_appcast" ]]; then
             if grep -Fq "/releases/download/${GITHUB_REF_NAME}/" "$current_appcast"; then
               echo "Pages already contains $GITHUB_REF_NAME; no appcast update is needed"
-              exit 0
-            fi
-            latest_build="$(xmllint \
-              --xpath "string((//*[local-name()='item']/*[local-name()='version'])[1])" \
-              "$current_appcast")"
-            if [[ ! "$latest_build" =~ ^[0-9]+$ ]]; then
-              echo "Current appcast has no valid latest Sparkle build number" >&2
-              exit 1
-            fi
-            if (( latest_build > BUILD_NUMBER )); then
-              echo "Pages contains a newer release; refusing to restore a stale appcast"
-              exit 0
+              appcast_needs_update=false
+            else
+              latest_build="$(xmllint \
+                --xpath "string((//*[local-name()='item']/*[local-name()='version'])[1])" \
+                "$current_appcast")"
+              if [[ ! "$latest_build" =~ ^[0-9]+$ ]]; then
+                echo "Current appcast has no valid latest Sparkle build number" >&2
+                exit 1
+              fi
+              if (( latest_build > BUILD_NUMBER )); then
+                echo "Pages contains a newer release; refusing to restore stale site files"
+                exit 0
+              fi
             fi
           fi
-          ditto "$RELEASE_DIRECTORY/appcast.xml" "$pages_directory/appcast.xml"
+          if [[ "$appcast_needs_update" == "true" ]]; then
+            ditto "$RELEASE_DIRECTORY/appcast.xml" "$pages_directory/appcast.xml"
+          fi
+          ditto site/index.html "$pages_directory/index.html"
+          ditto site/styles.css "$pages_directory/styles.css"
+          ditto \
+            App/MKVPlayer/Resources/Assets.xcassets/AppIcon.appiconset/icon_256x256.png \
+            "$pages_directory/icon.png"
           touch "$pages_directory/.nojekyll"
           git -C "$pages_directory" config user.name 'github-actions[bot]'
           git -C "$pages_directory" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git -C "$pages_directory" add appcast.xml .nojekyll
+          git -C "$pages_directory" add \
+            appcast.xml \
+            index.html \
+            styles.css \
+            icon.png \
+            .nojekyll
           if ! git -C "$pages_directory" diff --cached --quiet; then
-            git -C "$pages_directory" commit -m "Update appcast for $GITHUB_REF_NAME"
+            git -C "$pages_directory" commit -m "Update release site for $GITHUB_REF_NAME"
             auth_header="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
             git -C "$pages_directory" \
               -c http.https://github.com/.extraheader="AUTHORIZATION: basic $auth_header" \

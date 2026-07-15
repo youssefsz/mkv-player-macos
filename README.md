@@ -21,9 +21,9 @@ media-library database, plug-in system, or network-streaming feature.
 
 ## Download
 
-Signed and notarized builds are distributed through
-[GitHub Releases](https://github.com/youssefsz/mkv-player-macos/releases). If no
-binary release is listed yet, follow [Build from source](#build-from-source).
+Download the signed and notarized app from the
+[MKV Player website](https://youssefsz.github.io/mkv-player-macos/), or inspect
+every artifact on [GitHub Releases](https://github.com/youssefsz/mkv-player-macos/releases).
 
 When a release is available:
 
