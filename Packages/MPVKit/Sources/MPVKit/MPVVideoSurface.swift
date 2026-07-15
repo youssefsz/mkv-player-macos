@@ -76,6 +76,21 @@ public final class MPVVideoSurface: NSView {
         set { (videoLayer as? MPVOpenGLLayer)?.wantsExtendedDynamicRangeContent = newValue }
     }
 
+    /// Waits until Core Animation has created libmpv's render context.
+    ///
+    /// `state` reports whether libmpv was loaded successfully. A hosted layer
+    /// still needs a drawable before playback can start, which may take longer
+    /// when a window is first presented on a busy or virtualized Mac.
+    public func waitUntilReadyForPlayback(
+        timeout: Duration = .seconds(10)
+    ) async -> Bool {
+        guard state == .ready else {
+            return false
+        }
+        videoLayer.setNeedsDisplay()
+        return await client.waitForRenderContext(timeout: timeout)
+    }
+
     private func updateContentsScale() {
         videoLayer.contentsScale = window?.backingScaleFactor
             ?? NSScreen.main?.backingScaleFactor

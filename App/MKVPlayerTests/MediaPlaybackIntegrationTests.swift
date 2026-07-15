@@ -243,13 +243,22 @@ final class MediaPlaybackIntegrationTests: XCTestCase {
         )
         window.title = "Playback Integration Test"
         window.contentView = surface
-        window.orderFront(nil)
+        // XCTest can run while the host application is inactive. Present the
+        // window regardless so CAOpenGLLayer receives a drawable on CI as well
+        // as during an interactive local test run.
+        window.orderFrontRegardless()
         window.displayIfNeeded()
         surface.displayIfNeeded()
 
-        // `load` itself verifies that CAOpenGLLayer created the official libmpv
-        // render context within two seconds. A loaded engine with a broken
-        // render surface is a test failure, never an availability skip.
+        // Test the real render path without weakening the production load
+        // timeout. First presentation can be slower on a virtualized runner,
+        // so the integration harness explicitly waits for the official libmpv
+        // render context before issuing its first load.
+        guard await surface.waitUntilReadyForPlayback(timeout: .seconds(10)) else {
+            XCTFail("libmpv loaded but its OpenGL render context did not become ready")
+            throw IntegrationTestFailure.renderSurfaceUnavailable
+        }
+
         let harness = PlaybackHarness(
             engine: engine,
             window: window,

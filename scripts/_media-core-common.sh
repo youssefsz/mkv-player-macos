@@ -68,6 +68,13 @@ validate_lock_file() {
     [[ "$value" =~ ^[0-9a-f]{40}$ ]] || die "invalid libplacebo Git commit: $value"
   done
 
+  if [[ -n "${MEDIA_CORE_BINARY_URL:-}" || -n "${MEDIA_CORE_BINARY_SHA256:-}" ]]; then
+    [[ -n "${MEDIA_CORE_BINARY_URL:-}" ]] || die "missing MEDIA_CORE_BINARY_URL"
+    [[ -n "${MEDIA_CORE_BINARY_SHA256:-}" ]] || die "missing MEDIA_CORE_BINARY_SHA256"
+    validate_https_url "$MEDIA_CORE_BINARY_URL"
+    validate_sha256 "$MEDIA_CORE_BINARY_SHA256"
+  fi
+
   validate_https_url "$SPARKLE_TOOLS_URL"
   validate_sha256 "$SPARKLE_TOOLS_SHA256"
 }

@@ -108,13 +108,27 @@ jobs:
         run: brew install meson nasm ninja pkg-config
 
       - name: Cache verified dependency downloads
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ runner.temp }}/MediaCore-cache
           key: release-media-core-sources-${{ hashFiles('scripts/media-core.lock') }}
 
-      - name: Build universal MediaCore
-        run: scripts/build-media-core.sh
+      - name: Prepare universal MediaCore
+        shell: bash
+        run: |
+          set -euo pipefail
+          source scripts/_media-core-common.sh
+          if [[ -n "$MEDIA_CORE_BINARY_URL" ]]; then
+            # A previously published maintainer build is accepted only when
+            # both its immutable URL and SHA-256 are committed in the lockfile.
+            # Source pins are still fetched for the corresponding-source asset.
+            scripts/verify-media-core-pins.sh
+            scripts/bootstrap-media-core.sh
+          else
+            # Bootstrap the first release, or any dependency/toolchain change,
+            # directly from the reviewed and checksum-verified source pins.
+            scripts/build-media-core.sh
+          fi
 
       - name: Regenerate project with MediaCore embedding
         shell: bash
