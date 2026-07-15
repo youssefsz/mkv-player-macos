@@ -3,133 +3,97 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="MKV Player is a focused, native video player for macOS. Open source, signed, notarized, and built for Apple Silicon and Intel Macs.">
-    <meta name="theme-color" content="#242322">
+    <meta name="description" content="MKV Player is a native, open-source video player for macOS.">
+    <meta name="theme-color" content="#efede7">
     <meta property="og:title" content="MKV Player for macOS">
-    <meta property="og:description" content="A focused, native video player for the files you already own.">
+    <meta property="og:description" content="Local video playback, without the extras.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://youssefsz.github.io/mkv-player-macos/">
-    <meta property="og:image" content="https://youssefsz.github.io/mkv-player-macos/icon.png">
+    <meta property="og:image" content="https://youssefsz.github.io/mkv-player-macos/app-screenshot.png">
     <title>MKV Player for macOS</title>
     <link rel="icon" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <header class="site-header">
+    <header>
       <a class="brand" href="./" aria-label="MKV Player home">
-        <img src="icon.png" width="34" height="34" alt="">
+        <img src="icon.png" width="32" height="32" alt="">
         <span>MKV Player</span>
       </a>
-      <nav aria-label="Primary navigation">
-        <a href="#features">Features</a>
-        <a href="https://github.com/youssefsz/mkv-player-macos">GitHub</a>
-      </nav>
+      <a class="header-link" href="https://github.com/youssefsz/mkv-player-macos">GitHub <span aria-hidden="true">↗</span></a>
     </header>
 
     <main>
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow"><span></span> Native video playback for macOS</p>
-          <h1 id="hero-title">The video player that feels at home on your Mac.</h1>
-          <p class="intro">
-            Open your local videos without accounts, telemetry, or clutter.
-            MKV Player combines a native Mac interface with the proven playback
-            engine behind libmpv.
+          <h1 id="hero-title">Local video playback,<br>without the extras.</h1>
+          <p>
+            A native macOS player built with AppKit and libmpv. No account,
+            telemetry, media library, or plug-in system.
           </p>
-          <div class="actions">
-            <a class="button button-primary" href="https://github.com/youssefsz/mkv-player-macos/releases/download/v0.1.0/MKV-Player-0.1.0.dmg">
-              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 20h14"/></svg>
-              Download for macOS
-            </a>
-            <a class="button button-secondary" href="https://github.com/youssefsz/mkv-player-macos">View source</a>
-          </div>
-          <p class="release-meta">Version 0.1.0 · macOS 14+ · Apple Silicon and Intel</p>
-        </div>
-
-        <div class="product-visual">
-          <div class="window">
-            <div class="window-bar">
-              <div class="traffic-lights" aria-hidden="true"><i></i><i></i><i></i></div>
-              <span>MKV Player</span>
-              <span></span>
-            </div>
-            <div class="screen">
-              <div class="glow"></div>
-              <img src="icon.png" width="112" height="112" alt="MKV Player app icon">
-              <p>Drop a video here to play</p>
-            </div>
-            <div class="controls" aria-hidden="true">
-              <span class="time">0:00</span>
-              <span class="track"><i></i></span>
-              <span class="time">0:00</span>
-            </div>
+          <div class="download-row">
+            <a class="download" href="https://github.com/youssefsz/mkv-player-macos/releases/download/v0.1.0/MKV-Player-0.1.0.dmg">Download for macOS</a>
+            <span>v0.1.0 · macOS 14+</span>
           </div>
         </div>
+
+        <figure>
+          <img
+            class="screenshot"
+            src="app-screenshot.png"
+            width="1752"
+            height="976"
+            alt="MKV Player showing its finished-playing dialog and native playback controls on macOS"
+          >
+          <figcaption>MKV Player 0.1.0 on macOS.</figcaption>
+        </figure>
       </section>
 
-      <section class="trust" aria-label="Release assurances">
-        <p><span class="check">✓</span> Developer ID signed</p>
-        <p><span class="check">✓</span> Apple notarized</p>
-        <p><span class="check">✓</span> Open source</p>
-        <p><span class="check">✓</span> No telemetry</p>
-      </section>
-
-      <section class="features" id="features" aria-labelledby="features-title">
-        <div class="section-heading">
-          <p class="eyebrow"><span></span> Focused by design</p>
-          <h2 id="features-title">Everything you need. Nothing you don’t.</h2>
+      <section class="details" aria-labelledby="details-title">
+        <div class="details-heading">
+          <h2 id="details-title">Made for files,<br>not feeds.</h2>
         </div>
-        <div class="feature-grid">
-          <article>
-            <div class="feature-icon" aria-hidden="true">▶</div>
-            <h3>Plays the formats you use</h3>
-            <p>MKV, MP4, MOV, WebM, AVI, TS, and more—with embedded tracks, subtitles, and chapters.</p>
-          </article>
-          <article>
-            <div class="feature-icon" aria-hidden="true">⌘</div>
-            <h3>Made for the Mac</h3>
-            <p>Native menus, keyboard controls, drag and drop, fullscreen, VoiceOver, and system appearance.</p>
-          </article>
-          <article>
-            <div class="feature-icon" aria-hidden="true">◇</div>
-            <h3>Private by default</h3>
-            <p>Your playback stays local. There is no account, media-library database, or usage tracking.</p>
-          </article>
+        <div class="details-copy">
+          <p>
+            Open a video and watch it. The interface stays out of the way until
+            you need tracks, chapters, subtitles, playback speed, or fullscreen.
+          </p>
+          <dl>
+            <div>
+              <dt>Video</dt>
+              <dd>MKV, MP4, MOV, WebM, AVI, TS, and M2TS</dd>
+            </div>
+            <div>
+              <dt>Playback</dt>
+              <dd>libmpv with VideoToolbox hardware decoding</dd>
+            </div>
+            <div>
+              <dt>Mac</dt>
+              <dd>Apple Silicon and Intel, macOS 14 or later</dd>
+            </div>
+            <div>
+              <dt>Distribution</dt>
+              <dd>Developer ID signed, Apple notarized, and open source</dd>
+            </div>
+          </dl>
         </div>
       </section>
 
       <section class="install" aria-labelledby="install-title">
-        <div>
-          <p class="eyebrow"><span></span> Ready in a minute</p>
-          <h2 id="install-title">Install like any Mac app.</h2>
-        </div>
-        <ol>
-          <li><span>01</span><p>Download the signed disk image.</p></li>
-          <li><span>02</span><p>Drag MKV Player into Applications.</p></li>
-          <li><span>03</span><p>Open a video and start watching.</p></li>
-        </ol>
-      </section>
-
-      <section class="final-cta" aria-labelledby="download-title">
-        <img src="icon.png" width="72" height="72" alt="">
-        <h2 id="download-title">Your videos. A better player.</h2>
-        <p>Free, open source, and ready for macOS.</p>
-        <a class="button button-primary" href="https://github.com/youssefsz/mkv-player-macos/releases/download/v0.1.0/MKV-Player-0.1.0.dmg">Download MKV Player</a>
+        <h2 id="install-title">Install</h2>
+        <p>Open the disk image, drag MKV Player into Applications, then open a video with Command-O.</p>
+        <a href="https://github.com/youssefsz/mkv-player-macos/releases/tag/v0.1.0">Release notes <span aria-hidden="true">→</span></a>
       </section>
     </main>
 
     <footer>
-      <div class="footer-brand">
-        <img src="icon.png" width="28" height="28" alt="">
-        <span>MKV Player</span>
-      </div>
-      <div class="footer-links">
-        <a href="https://github.com/youssefsz/mkv-player-macos/releases/tag/v0.1.0">Release notes</a>
+      <span>MKV Player is free software under GPL-3.0-or-later.</span>
+      <nav aria-label="Project links">
         <a href="https://github.com/youssefsz/mkv-player-macos/issues/new/choose">Report an issue</a>
         <a href="https://github.com/youssefsz/mkv-player-macos/blob/main/SECURITY.md">Security</a>
         <a href="https://github.com/youssefsz/mkv-player-macos/blob/main/LICENSE">License</a>
-      </div>
+      </nav>
     </footer>
   </body>
 </html>
