@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="800" viewBox="0 0 660 400">
+  <defs>
+    <linearGradient id="surface" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F9FBFD"/>
+      <stop offset="0.55" stop-color="#EEF3F8"/>
+      <stop offset="1" stop-color="#E7EDF4"/>
+    </linearGradient>
+    <radialGradient id="blueGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                    gradientTransform="translate(144 230) rotate(28) scale(220 180)">
+      <stop stop-color="#5AC8FA" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#5AC8FA" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="whiteGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                    gradientTransform="translate(522 234) rotate(152) scale(214 170)">
+      <stop stop-color="#FFFFFF" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="arrow" x1="276" y1="0" x2="386" y2="0">
+      <stop stop-color="#5AC8FA" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#35404B"/>
+    </linearGradient>
+    <linearGradient id="folder" x1="0" y1="0" x2="0.8" y2="1">
+      <stop stop-color="#62D0FF"/>
+      <stop offset="1" stop-color="#087DDA"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="660" height="400" fill="url(#surface)"/>
+  <rect width="660" height="400" fill="url(#blueGlow)"/>
+  <rect width="660" height="400" fill="url(#whiteGlow)"/>
+  <path d="M0 0H660V1H0Z" fill="#202124" fill-opacity="0.10"/>
+
+  <g transform="translate(225 46)" filter="url(#shadow)">
+    <rect width="36" height="36" rx="9" fill="#202124" stroke="#F5F5F7" stroke-width="2"/>
+    <rect x="7" y="10" width="3" height="16" rx="1.5" fill="#5AC8FA"/>
+    <path d="M15 10.5c0-1.4 1.5-2.2 2.7-1.5l12 7.6c1.1.7 1.1 2.2 0 2.9l-12 7.6c-1.2.7-2.7-.1-2.7-1.5V10.5Z" fill="#F5F5F7"/>
+  </g>
+  <text x="273" y="69" fill="#202124" font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif"
+        font-size="22" font-weight="650" letter-spacing="-0.35">Install MKV Player</text>
+  <text x="330" y="103" text-anchor="middle" fill="#4F5A66"
+        font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif"
+        font-size="14" font-weight="400">Drag MKV Player into the Applications folder</text>
+
+  <!-- Finder on some macOS 26 builds intermittently omits the Applications
+       symlink icon. This background fallback keeps the drop target visible;
+       the native icon covers it when Finder renders normally. -->
+  <g transform="translate(446 184)" filter="url(#shadow)">
+    <path d="M5 18c0-6 4-10 10-10h28c4 0 7 1 10 4l8 8h32c6 0 10 4 10 10v57c0 7-5 12-12 12H17C10 99 5 94 5 87V18Z"
+          fill="url(#folder)" stroke="#FFFFFF" stroke-opacity="0.8" stroke-width="2"/>
+    <path d="M29 78L48 43M68 78L49 43M37 64H60" fill="none" stroke="#FFFFFF" stroke-width="6"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g opacity="0.9" filter="url(#shadow)">
+    <path d="M275 235H378" fill="none" stroke="url(#arrow)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M366 222L381 235L366 248" fill="none" stroke="#35404B" stroke-width="5"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <text x="330" y="283" text-anchor="middle" fill="#65717D"
+        font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif"
+        font-size="11" font-weight="500" letter-spacing="0.6">DRAG TO INSTALL</text>
+  <text x="330" y="346" text-anchor="middle" fill="#6C7884"
+        font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif"
+        font-size="11">After copying, open MKV Player from Applications</text>
+</svg>

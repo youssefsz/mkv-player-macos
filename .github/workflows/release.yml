@@ -107,6 +107,21 @@ jobs:
       - name: Install source-build tools
         run: brew install meson nasm ninja pkg-config
 
+      - name: Install pinned DMG layout tool
+        shell: bash
+        run: |
+          set -euo pipefail
+          create_dmg_directory="$RUNNER_TEMP/create-dmg"
+          git init -q "$create_dmg_directory"
+          git -C "$create_dmg_directory" remote add origin \
+            https://github.com/create-dmg/create-dmg.git
+          git -C "$create_dmg_directory" fetch -q --depth 1 origin \
+            a2b71d0fda6d0df2a86dc7f67082d4d73e84c59f
+          git -C "$create_dmg_directory" checkout -q --detach FETCH_HEAD
+          test "$(git -C "$create_dmg_directory" rev-parse HEAD)" = \
+            a2b71d0fda6d0df2a86dc7f67082d4d73e84c59f
+          printf 'CREATE_DMG=%s/create-dmg\n' "$create_dmg_directory" >> "$GITHUB_ENV"
+
       - name: Cache verified dependency downloads
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -299,9 +314,8 @@ jobs:
           set -euo pipefail
           source scripts/_media-core-common.sh
           release_directory="$RUNNER_TEMP/release"
-          staging_directory="$RUNNER_TEMP/dmg-staging"
           api_key="$RUNNER_TEMP/AuthKey_${APPLE_API_KEY_ID}.p8"
-          mkdir -p "$release_directory" "$staging_directory"
+          mkdir -p "$release_directory"
           printf '%s' "$APPLE_API_KEY_P8_BASE64" | base64 --decode > "$api_key"
           chmod 600 "$api_key"
 
@@ -318,15 +332,11 @@ jobs:
           zip="$release_directory/MKV-Player-${VERSION}.zip"
           ditto -c -k --sequesterRsrc --keepParent "$ARCHIVED_APP" "$zip"
 
-          ditto "$ARCHIVED_APP" "$staging_directory/MKV Player.app"
-          ln -s /Applications "$staging_directory/Applications"
           dmg="$release_directory/MKV-Player-${VERSION}.dmg"
-          hdiutil create \
-            -volname 'MKV Player' \
-            -srcfolder "$staging_directory" \
-            -format UDZO \
-            -ov \
-            "$dmg"
+          scripts/create-release-dmg.sh \
+            --app "$ARCHIVED_APP" \
+            --output "$dmg" \
+            --create-dmg "$CREATE_DMG"
           codesign --force --timestamp --sign "$SIGNING_IDENTITY" "$dmg"
           xcrun notarytool submit "$dmg" \
             --key "$api_key" \

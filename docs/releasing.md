@@ -104,6 +104,8 @@ The `Release` workflow accepts only `vMAJOR.MINOR.PATCH` tags. It:
 3. imports the Developer ID identity into an ephemeral keychain;
 4. signs the app with hardened runtime and the sandbox entitlements;
 5. notarizes and staples the app, ZIP, and DMG as applicable;
+   the DMG uses a pinned layout tool, a compact Finder window, a Retina
+   background, fixed app and Applications positions, and a custom volume icon;
 6. verifies architecture, bundle identity, minimum system version, code signing,
    notarization, and forbidden local-library paths;
 7. creates SHA-256 checksums and Sparkle EdDSA signatures;

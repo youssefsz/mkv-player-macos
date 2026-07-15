@@ -34,6 +34,9 @@ jobs:
           source scripts/_media-core-common.sh
           validate_lock_file
 
+      - name: Render and validate DMG artwork
+        run: scripts/render-dmg-assets.sh "$RUNNER_TEMP/dmg-assets"
+
       - name: Verify committed playback fixtures
         working-directory: Tests/Fixtures/Generated
         run: shasum -a 256 --check SHA256SUMS.txt

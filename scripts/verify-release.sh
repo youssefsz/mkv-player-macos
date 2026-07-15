@@ -118,6 +118,13 @@ case "$ARTIFACT" in
     apps=()
     while IFS= read -r -d '' app; do apps+=("$app"); done < <(find "$mount_point" -maxdepth 2 -type d -name 'MKV Player.app' -print0)
     [[ ${#apps[@]} -eq 1 ]] || die "disk image must contain exactly one MKV Player.app"
+    [[ -L "$mount_point/Applications" ]] || die "disk image has no Applications symlink"
+    [[ "$(readlink "$mount_point/Applications")" == "/Applications" ]] || \
+      die "disk image Applications symlink has the wrong destination"
+    [[ -f "$mount_point/.DS_Store" ]] || die "disk image has no saved Finder layout"
+    [[ -f "$mount_point/.background/background.tiff" ]] || \
+      die "disk image has no Retina Finder background"
+    [[ -f "$mount_point/.VolumeIcon.icns" ]] || die "disk image has no custom volume icon"
     APP="${apps[0]}"
     ;;
   *)
