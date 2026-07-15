@@ -239,4 +239,8 @@ internal enum MPVRenderParameter: Int32 {
     case openGLInitParams = 2
     case openGLFBO = 3
     case flipY = 4
+    case softwareSize = 17
+    case softwareFormat = 18
+    case softwareStride = 19
+    case softwarePointer = 20
 }

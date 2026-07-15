@@ -3,6 +3,28 @@ import MPVKit
 import OSLog
 import Sparkle
 
+enum ProjectLinks {
+    static let repository = requiredURL(
+        "https://github.com/youssefsz/mkv-player-macos"
+    )
+    static let help = requiredURL(
+        "https://github.com/youssefsz/mkv-player-macos#readme"
+    )
+    static let newIssue = requiredURL(
+        "https://github.com/youssefsz/mkv-player-macos/issues/new/choose"
+    )
+
+    private static func requiredURL(_ address: String) -> URL {
+        guard let url = URL(string: address),
+              url.scheme == "https",
+              url.host == "github.com"
+        else {
+            preconditionFailure("Invalid project URL: \(address)")
+        }
+        return url
+    }
+}
+
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     private let logger = Logger(subsystem: "io.github.youssefsz.MKVPlayer", category: "lifecycle")
@@ -195,11 +217,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     }
 
     @objc func openProjectWebsite(_ sender: Any?) {
-        openWebPage("https://github.com/youssefsz/mkv-player-macos")
+        openWebPage(ProjectLinks.repository)
+    }
+
+    @objc func openHelp(_ sender: Any?) {
+        openWebPage(ProjectLinks.help)
     }
 
     @objc func reportIssue(_ sender: Any?) {
-        openWebPage("https://github.com/youssefsz/mkv-player-macos/issues/new/choose")
+        openWebPage(ProjectLinks.newIssue)
     }
 
     func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
@@ -237,8 +263,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         }
     }
 
-    private func openWebPage(_ address: String) {
-        guard let url = URL(string: address) else { return }
+    private func openWebPage(_ url: URL) {
         NSWorkspace.shared.open(url)
     }
 

@@ -5,6 +5,21 @@ import XCTest
 @testable import MKV_Player
 
 final class PlayerPresentationTests: XCTestCase {
+    func testProjectLinksTargetThePublicRepository() {
+        XCTAssertEqual(
+            ProjectLinks.repository.absoluteString,
+            "https://github.com/youssefsz/mkv-player-macos"
+        )
+        XCTAssertEqual(
+            ProjectLinks.help.absoluteString,
+            "https://github.com/youssefsz/mkv-player-macos#readme"
+        )
+        XCTAssertEqual(
+            ProjectLinks.newIssue.absoluteString,
+            "https://github.com/youssefsz/mkv-player-macos/issues/new/choose"
+        )
+    }
+
     func testEmptySnapshotMapsToNativeEmptyState() {
         let state = PlayerPresentationState(
             snapshot: .empty,

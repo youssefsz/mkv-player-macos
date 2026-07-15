@@ -1,6 +1,6 @@
 import AppKit
 import Foundation
-import MPVKit
+@_spi(Testing) import MPVKit
 import PlayerCore
 import XCTest
 
@@ -229,6 +229,14 @@ final class MediaPlaybackIntegrationTests: XCTestCase {
 #endif
         }
 
+        let renderHost: PlaybackRenderHost
+#if MKVPLAYER_HEADLESS_MEDIA_TESTS
+        guard let surface = MPVOffscreenRenderSurface(engine: engine) else {
+            XCTFail("libmpv loaded but its offscreen render context was unavailable")
+            throw IntegrationTestFailure.renderSurfaceUnavailable
+        }
+        renderHost = .offscreen(surface)
+#else
         let surface = MPVVideoSurface(engine: engine)
         guard surface.state == .ready else {
             XCTFail("libmpv loaded but its video surface was unavailable: \(surface.state)")
@@ -243,10 +251,6 @@ final class MediaPlaybackIntegrationTests: XCTestCase {
         )
         window.title = "Playback Integration Test"
         window.contentView = surface
-        // Give the hosted surface a real AppKit presentation lifecycle. Making
-        // the window key/main is sufficient even when the XCTest host itself is
-        // not the active application; orderFrontRegardless also keeps the
-        // window visible on a noninteractive CI desktop.
         window.makeKeyAndOrderFront(nil)
         window.makeMain()
         window.orderFrontRegardless()
@@ -254,18 +258,16 @@ final class MediaPlaybackIntegrationTests: XCTestCase {
         window.displayIfNeeded()
         surface.displayIfNeeded()
 
-        // Test the real render path without weakening the production load
-        // timeout. First presentation can be slower on a virtualized runner,
-        // so the integration harness explicitly waits for the official libmpv
-        // render context before issuing its first load.
         guard await surface.waitUntilReadyForPlayback(timeout: .seconds(10)) else {
             XCTFail("libmpv loaded but its OpenGL render context did not become ready")
             throw IntegrationTestFailure.renderSurfaceUnavailable
         }
+        renderHost = .window(window)
+#endif
 
         let harness = PlaybackHarness(
             engine: engine,
-            window: window,
+            renderHost: renderHost,
             probe: PlaybackEventProbe(events: engine.events)
         )
         Self.sharedHarness = harness
@@ -312,8 +314,13 @@ final class MediaPlaybackIntegrationTests: XCTestCase {
 
 private struct PlaybackHarness {
     let engine: MPVEngine
-    let window: NSWindow
+    let renderHost: PlaybackRenderHost
     let probe: PlaybackEventProbe
+}
+
+private enum PlaybackRenderHost {
+    case window(NSWindow)
+    case offscreen(MPVOffscreenRenderSurface)
 }
 
 private actor PlaybackEventStore {

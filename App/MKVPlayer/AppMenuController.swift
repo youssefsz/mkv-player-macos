@@ -174,7 +174,9 @@ final class AppMenuController: NSObject {
 
     private func helpMenuItem() -> NSMenuItem {
         let menu = NSMenu(title: "Help")
-        menu.addItem(item("MKV Player on GitHub", #selector(AppDelegate.openProjectWebsite(_:))))
+        menu.addItem(item("MKV Player Help", #selector(AppDelegate.openHelp(_:))))
+        menu.addItem(.separator())
+        menu.addItem(item("Project Website", #selector(AppDelegate.openProjectWebsite(_:))))
         menu.addItem(item("Report an Issue…", #selector(AppDelegate.reportIssue(_:))))
         NSApp.helpMenu = menu
         return menuItem(title: "Help", submenu: menu)

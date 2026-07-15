@@ -154,13 +154,16 @@ jobs:
           set -euo pipefail
           swift test --package-path Packages/PlayerCore -Xswiftc -warnings-as-errors
           swift test --package-path Packages/MPVKit -Xswiftc -warnings-as-errors
+          # Hosted runners do not guarantee an on-screen OpenGL drawable.
+          # Keep real media decoding under test through libmpv's supported
+          # software render API; developer Macs still test CAOpenGLLayer.
           xcodebuild \
             -project MKVPlayer.xcodeproj \
             -scheme MKVPlayer \
             -destination 'platform=macOS' \
             -derivedDataPath "$RUNNER_TEMP/MKVPlayer-Test-DerivedData" \
             -disableAutomaticPackageResolution \
-            MKVPLAYER_TEST_COMPILATION_CONDITION=MKVPLAYER_REQUIRE_MEDIA_CORE_TESTS \
+            MKVPLAYER_TEST_COMPILATION_CONDITION='MKVPLAYER_REQUIRE_MEDIA_CORE_TESTS MKVPLAYER_HEADLESS_MEDIA_TESTS' \
             CODE_SIGNING_ALLOWED=NO \
             test
 
