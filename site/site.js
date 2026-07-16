@@ -30,6 +30,10 @@
 
     frame.style.setProperty("--frame-width", `${mix(initialWidth, viewportWidth, expansion)}px`);
     frame.style.setProperty("--frame-height", `${mix(initialHeight, viewportHeight, expansion)}px`);
+    frame.style.setProperty(
+      "--frame-offset-y",
+      `${mix((initialHeight - viewportHeight) / 2, 0, expansion)}px`
+    );
     frame.style.setProperty("--frame-radius", `${mix(14, 0, expansion)}px`);
     frame.style.setProperty("--frame-border-alpha", `${mix(0.2, 0, expansion)}`);
     frame.style.setProperty("--frame-shadow-alpha", `${mix(0.16, 0, expansion)}`);
