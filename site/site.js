@@ -24,9 +24,10 @@
     const initialWidth = Math.min(1120, viewportWidth - pageGutter);
     const initialHeight = initialWidth * sourceAspectRatio;
     const bounds = stage.getBoundingClientRect();
-    const scrollRange = Math.max(stage.offsetHeight - viewportHeight, 1);
-    const stageProgress = clamp(-bounds.top / scrollRange);
-    const expansion = smoothstep(clamp(stageProgress / 0.58));
+    const expansionStart = Math.max((viewportHeight - initialHeight) / 2, 0);
+    const expansion = smoothstep(
+      clamp((expansionStart - bounds.top) / Math.max(expansionStart, 1))
+    );
 
     frame.style.setProperty("--frame-width", `${mix(initialWidth, viewportWidth, expansion)}px`);
     frame.style.setProperty("--frame-height", `${mix(initialHeight, viewportHeight, expansion)}px`);
