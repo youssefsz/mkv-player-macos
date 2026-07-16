@@ -30,7 +30,10 @@ fi
 mkdir -p "$output_directory"
 ditto "$project_root/site/index.html" "$output_directory/index.html"
 ditto "$project_root/site/styles.css" "$output_directory/styles.css"
-ditto "$project_root/site/app-screenshot.png" "$output_directory/app-screenshot.png"
+ditto "$project_root/site/site.js" "$output_directory/site.js"
+ditto "$project_root/site/product-tour.mp4" "$output_directory/product-tour.mp4"
+ditto "$project_root/site/product-tour-poster.jpg" "$output_directory/product-tour-poster.jpg"
+ditto "$project_root/site/product-tour-poster.jpg" "$output_directory/app-screenshot.png"
 ditto \
   "$project_root/App/MKVPlayer/Resources/Assets.xcassets/AppIcon.appiconset/icon_256x256.png" \
   "$output_directory/icon.png"
