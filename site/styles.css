@@ -147,19 +147,47 @@ h1 {
   overflow: clip;
 }
 
+.video-positioner {
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+
 .video-frame {
   position: relative;
-  width: var(--frame-width, min(1120px, calc(100vw - 48px)));
-  height: var(--frame-height, auto);
+  width: min(1120px, calc(100vw - 48px));
+  height: auto;
   aspect-ratio: 1920 / 1006;
   overflow: hidden;
-  border: 1px solid rgba(248, 246, 241, var(--frame-border-alpha, 0.2));
-  border-radius: var(--frame-radius, 14px);
+  border: 1px solid rgba(248, 246, 241, 0.2);
+  border-radius: 14px;
   background: #090909;
-  box-shadow: 0 24px 60px rgba(41, 40, 39, var(--frame-shadow-alpha, 0.16));
-  transform: translate3d(0, var(--frame-offset-y, 0), 0);
-  will-change: transform;
+  box-shadow: 0 24px 60px rgba(41, 40, 39, 0.16);
   contain: layout paint;
+}
+
+.scroll-animations-ready .video-positioner {
+  width: 100vw;
+  height: 100svh;
+  transform: translate3d(0, var(--position-y, var(--initial-offset-y)), 0);
+  will-change: transform;
+}
+
+.scroll-animations-ready .video-frame {
+  width: 100vw;
+  height: 100svh;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  clip-path: inset(
+    var(--frame-clip-y, var(--initial-clip-y))
+    var(--frame-clip-x, var(--initial-clip-x))
+    round var(--frame-radius, var(--initial-radius))
+  );
+  transform: scale(var(--frame-scale, var(--initial-scale)));
+  transform-origin: center;
+  will-change: transform, clip-path;
 }
 
 .product-video {
@@ -188,6 +216,62 @@ h1 {
   pointer-events: none;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
+}
+
+@keyframes center-product-video {
+  from {
+    transform: translate3d(0, var(--initial-offset-y), 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes expand-product-video {
+  from {
+    clip-path: inset(
+      var(--initial-clip-y) var(--initial-clip-x)
+      round var(--initial-radius)
+    );
+    transform: scale(var(--initial-scale));
+  }
+
+  to {
+    clip-path: inset(0 round 0);
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-scroll-cue {
+  from {
+    opacity: 1;
+  }
+
+  35%,
+  to {
+    opacity: 0;
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .uses-native-scroll-animation .video-positioner {
+    animation: center-product-video 1ms linear both;
+    animation-timeline: scroll(root block);
+    animation-range: var(--parallax-start) var(--position-end);
+  }
+
+  .uses-native-scroll-animation .video-frame {
+    animation: expand-product-video 1ms linear both;
+    animation-timeline: scroll(root block);
+    animation-range: var(--parallax-start) var(--parallax-end);
+  }
+
+  .uses-native-scroll-animation .scroll-cue {
+    animation: fade-scroll-cue 1ms linear both;
+    animation-timeline: scroll(root block);
+    animation-range: var(--parallax-start) var(--parallax-end);
+  }
 }
 
 .details {
@@ -389,9 +473,21 @@ a:focus-visible {
     overflow: visible;
   }
 
-  .video-frame {
+  .video-positioner,
+  .scroll-animations-ready .video-positioner {
     width: 100%;
     height: auto;
+    transform: none;
+  }
+
+  .video-frame,
+  .scroll-animations-ready .video-frame {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1920 / 1006;
+    border: 1px solid rgba(248, 246, 241, 0.2);
+    border-radius: 14px;
+    clip-path: none;
     transform: none;
   }
 
