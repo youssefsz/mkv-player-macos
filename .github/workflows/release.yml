@@ -662,6 +662,9 @@ jobs:
             appcast.xml \
             index.html \
             styles.css \
+            site.js \
+            product-tour.mp4 \
+            product-tour-poster.jpg \
             app-screenshot.png \
             icon.png \
             .nojekyll

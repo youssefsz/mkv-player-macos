@@ -130,24 +130,62 @@ h1 {
   font-size: 12px;
 }
 
-figure {
-  margin: 80px 0 0;
+.video-stage {
+  position: relative;
+  width: 100vw;
+  height: 215svh;
+  margin: 80px 0 0 calc(50% - 50vw);
 }
 
-.screenshot {
+.video-pin {
+  position: sticky;
+  top: 0;
   width: 100%;
-  height: auto;
-  display: block;
-  border: 1px solid rgba(41, 40, 39, 0.22);
-  border-radius: 14px;
-  box-shadow: 0 24px 60px rgba(41, 40, 39, 0.16);
+  height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: clip;
 }
 
-figcaption {
-  margin-top: 12px;
-  color: var(--muted);
+.video-frame {
+  position: relative;
+  width: var(--frame-width, min(1120px, calc(100vw - 48px)));
+  height: var(--frame-height, auto);
+  aspect-ratio: 1920 / 1006;
+  overflow: hidden;
+  border: 1px solid rgba(248, 246, 241, var(--frame-border-alpha, 0.2));
+  border-radius: var(--frame-radius, 14px);
+  background: #090909;
+  box-shadow: 0 24px 60px rgba(41, 40, 39, var(--frame-shadow-alpha, 0.16));
+  contain: layout paint;
+}
+
+.product-video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  background: #090909;
+}
+
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  margin: 0;
+  padding: 7px 11px;
+  border: 1px solid rgba(248, 246, 241, 0.2);
+  border-radius: 999px;
+  color: rgba(248, 246, 241, 0.8);
+  background: rgba(9, 9, 9, 0.68);
   font-size: 11px;
-  text-align: right;
+  letter-spacing: 0.01em;
+  opacity: var(--cue-opacity, 1);
+  transform: translateX(-50%);
+  transition: opacity 120ms linear;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 .details {
@@ -299,7 +337,7 @@ a:focus-visible {
     gap: 12px;
   }
 
-  figure {
+  .video-stage {
     margin-top: 56px;
   }
 
@@ -332,6 +370,30 @@ a:focus-visible {
   .credits {
     flex-direction: column;
     gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-stage {
+    width: auto;
+    height: auto;
+    margin-left: 0;
+  }
+
+  .video-pin {
+    position: static;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+
+  .video-frame {
+    width: 100%;
+    height: auto;
+  }
+
+  .scroll-cue {
+    display: none;
   }
 }
 

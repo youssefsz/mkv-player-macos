@@ -38,15 +38,27 @@
           </div>
         </div>
 
-        <figure>
-          <img
-            class="screenshot"
-            src="app-screenshot.png"
-            width="1752"
-            height="976"
-            alt="MKV Player showing its finished-playing dialog and native playback controls on macOS"
-          >
-          <figcaption>MKV Player __SITE_VERSION__ on macOS.</figcaption>
+        <figure class="video-stage" data-video-stage>
+          <div class="video-pin">
+            <div class="video-frame" data-video-frame>
+              <video
+                class="product-video"
+                data-product-video
+                controls
+                muted
+                playsinline
+                preload="metadata"
+                poster="product-tour-poster.jpg"
+                width="1920"
+                height="1006"
+                aria-label="MKV Player product tour, from download and installation to video playback"
+              >
+                <source src="product-tour.mp4" type="video/mp4">
+                Your browser does not support HTML video.
+              </video>
+            </div>
+            <p class="scroll-cue" data-scroll-cue aria-hidden="true">Scroll to expand</p>
+          </div>
         </figure>
       </section>
 
@@ -98,5 +110,6 @@
         <a href="https://github.com/youssefsz/mkv-player-macos/blob/main/LICENSE">License</a>
       </nav>
     </footer>
+    <script src="site.js" defer></script>
   </body>
 </html>
