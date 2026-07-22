@@ -144,7 +144,7 @@ app_target.build_configurations.each do |config|
   settings['GENERATE_INFOPLIST_FILE'] = 'NO'
   settings['INFOPLIST_FILE'] = 'App/MKVPlayer/Info.plist'
   settings['LD_RUNPATH_SEARCH_PATHS'] = '$(inherited) @executable_path/../Frameworks'
-  settings['MARKETING_VERSION'] = '0.1.0'
+  settings['MARKETING_VERSION'] = '0.1.2'
   settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'io.github.youssefsz.MKVPlayer'
   settings['PRODUCT_NAME'] = 'MKV Player'
   settings['SPARKLE_PUBLIC_ED_KEY'] = ''

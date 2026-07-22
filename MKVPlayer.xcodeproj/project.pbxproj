@@ -380,7 +380,7 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		4916034A6B7EC54338AC055AB7E43D5D /* Release */ = {
+		24020E14700F5EE3B14618C2A66C0725 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
@@ -397,7 +397,7 @@
 				INFOPLIST_FILE = App/MKVPlayer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.youssefsz.MKVPlayer;
 				PRODUCT_NAME = "MKV Player";
 				SDKROOT = macosx;
@@ -405,32 +405,6 @@
 				SWIFT_STRICT_CONCURRENCY = complete;
 			};
 			name = Release;
-		};
-		5C3AD4D4047DA07F87B3DD7D11434768 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = App/MKVPlayer/MKVPlayer.entitlements;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				ENABLE_APP_SANDBOX = YES;
-				ENABLE_HARDENED_RUNTIME = NO;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = App/MKVPlayer/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.github.youssefsz.MKVPlayer;
-				PRODUCT_NAME = "MKV Player";
-				SDKROOT = macosx;
-				SPARKLE_PUBLIC_ED_KEY = "";
-				SWIFT_STRICT_CONCURRENCY = complete;
-			};
-			name = Debug;
 		};
 		94FCE409393A7744311B27A2841D1E2E /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -510,6 +484,32 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) $(MKVPLAYER_TEST_COMPILATION_CONDITION)";
 				SWIFT_STRICT_CONCURRENCY = complete;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MKV Player.app/Contents/MacOS/MKV Player";
+			};
+			name = Debug;
+		};
+		B0BF75B0D2B47F34FE2244074985B9BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = App/MKVPlayer/MKVPlayer.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/MKVPlayer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.youssefsz.MKVPlayer;
+				PRODUCT_NAME = "MKV Player";
+				SDKROOT = macosx;
+				SPARKLE_PUBLIC_ED_KEY = "";
+				SWIFT_STRICT_CONCURRENCY = complete;
 			};
 			name = Debug;
 		};
@@ -602,8 +602,8 @@
 		7A39DB99FB99EA880E6A1B5A103FD9A2 /* Build configuration list for PBXNativeTarget "MKVPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4916034A6B7EC54338AC055AB7E43D5D /* Release */,
-				5C3AD4D4047DA07F87B3DD7D11434768 /* Debug */,
+				24020E14700F5EE3B14618C2A66C0725 /* Release */,
+				B0BF75B0D2B47F34FE2244074985B9BE /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
