@@ -532,6 +532,31 @@ final class PlayerPresentationTests: XCTestCase {
         XCTAssertEqual(afterExternalSeek?.displayedOffset, 5)
     }
 
+    func testKeyboardSeekGestureResetsBeforeReplayFromEnd() {
+        var gesture = KeyboardSeekGesture()
+        let now = Date(timeIntervalSince1970: 7_000)
+
+        let seekToEnd = gesture.apply(
+            step: 5,
+            position: 85,
+            duration: 90,
+            now: now
+        )
+        XCTAssertEqual(seekToEnd?.target, 90)
+        XCTAssertEqual(seekToEnd?.displayedOffset, 5)
+
+        gesture.reset()
+
+        let afterReplay = gesture.apply(
+            step: 5,
+            position: 0,
+            duration: 90,
+            now: now.addingTimeInterval(0.2)
+        )
+        XCTAssertEqual(afterReplay?.target, 5)
+        XCTAssertEqual(afterReplay?.displayedOffset, 5)
+    }
+
     @MainActor
     func testRecoverableErrorRemainsNonFatalAndDismissible() throws {
         let canvas = PlayerCanvasView(frame: NSRect(x: 0, y: 0, width: 800, height: 500))

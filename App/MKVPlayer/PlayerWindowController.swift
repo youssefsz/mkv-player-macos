@@ -268,6 +268,7 @@ final class PlayerWindowController: NSWindowController {
 
     func togglePlayback() {
         guard session.canPlayOrPause else { return }
+        keyboardSeekGesture.reset()
         perform { [session] in try await session.togglePlayback() }
     }
 
@@ -653,6 +654,7 @@ extension PlayerWindowController: PlayerViewControllerDelegate {
         perform { [session] in try await session.restartFromBeginning() }
     }
     func playerViewControllerDidRequestReplay(_ controller: PlayerViewController) {
+        keyboardSeekGesture.reset()
         perform { [session] in try await session.play() }
     }
     func playerViewController(_ controller: PlayerViewController, didSelectQueueItem id: UUID) {
