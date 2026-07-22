@@ -509,6 +509,29 @@ final class PlayerPresentationTests: XCTestCase {
         XCTAssertEqual(afterReset?.displayedOffset, 5)
     }
 
+    func testKeyboardSeekGestureResetsBeforeNonKeyboardPositionChange() {
+        var gesture = KeyboardSeekGesture()
+        let now = Date(timeIntervalSince1970: 6_000)
+
+        // Pause at 0:20, Right Arrow → 0:25
+        let first = gesture.apply(step: 5, position: 20, duration: 120, now: now)
+        XCTAssertEqual(first?.target, 25)
+        XCTAssertEqual(first?.displayedOffset, 5)
+
+        // Forward 10 Seconds (or scrub / chapter / restart) moves to 0:35
+        gesture.reset()
+
+        // Right Arrow again within the window must start from 0:35 → 0:40
+        let afterExternalSeek = gesture.apply(
+            step: 5,
+            position: 35,
+            duration: 120,
+            now: now.addingTimeInterval(0.2)
+        )
+        XCTAssertEqual(afterExternalSeek?.target, 40)
+        XCTAssertEqual(afterExternalSeek?.displayedOffset, 5)
+    }
+
     @MainActor
     func testRecoverableErrorRemainsNonFatalAndDismissible() throws {
         let canvas = PlayerCanvasView(frame: NSRect(x: 0, y: 0, width: 800, height: 500))

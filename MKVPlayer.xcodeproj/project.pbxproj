@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -93,14 +93,14 @@
 		D7DDDCDF39F401A2FF8F10D34BE5D998 /* ActionControls.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ActionControls.swift; path = Views/ActionControls.swift; sourceTree = "<group>"; };
 		DC970F24E2FD67D6850396C0A8B94572 /* MediaPlaybackIntegrationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MediaPlaybackIntegrationTests.swift; sourceTree = "<group>"; };
 		DCABD4EFB5FD951C81652C1D1CEC311E /* PlayerPresentationAdapter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlayerPresentationAdapter.swift; path = Support/PlayerPresentationAdapter.swift; sourceTree = "<group>"; };
-		EB48258B233EBE9D08DBCFC219C7BA4A /* MKV Player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MKV Player.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB48258B233EBE9D08DBCFC219C7BA4A /* MKV Player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "MKV Player.app"; path = "MKV Player.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF7C79C49BA4712E807218819A53F865 /* MKVPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MKVPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F03DD520248A116C4E03714BC8021F87 /* KeyboardSeekGesture.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = KeyboardSeekGesture.swift; path = Support/KeyboardSeekGesture.swift; sourceTree = "<group>"; };
 		F6B7D1DE6FAB3BA2DBDC79A67C580D8C /* PlayerWindowController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlayerWindowController.swift; sourceTree = "<group>"; };
 		F72D62A7A4D3A315B11F7EBA30708972 /* PlayerPresentationState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlayerPresentationState.swift; path = Support/PlayerPresentationState.swift; sourceTree = "<group>"; };
 		FB5F3BCB613B29A4BF8966D3B10B11D0 /* EmptyStateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EmptyStateView.swift; path = Views/EmptyStateView.swift; sourceTree = "<group>"; };
 		FBAA9004FD80B560F77CF7814456341A /* PlayerWindow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlayerWindow.swift; sourceTree = "<group>"; };
-		FFBA790D8CE80A14CCD0222922B03195 /* MediaCore.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.xcframework; path = MediaCore.xcframework; sourceTree = "<group>"; };
+		FFBA790D8CE80A14CCD0222922B03195 /* MediaCore.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = MediaCore.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +163,7 @@
 			children = (
 				E3BD4E44A9DBB8ADE8D4BDABB8DBF1E4 /* MKVPlayer */,
 			);
+			name = App;
 			path = App;
 			sourceTree = "<group>";
 		};
@@ -188,6 +189,7 @@
 			children = (
 				FFBA790D8CE80A14CCD0222922B03195 /* MediaCore.xcframework */,
 			);
+			name = Vendor;
 			path = Vendor;
 			sourceTree = "<group>";
 		};
@@ -220,6 +222,7 @@
 				107B0B32F5198AB07AAF1A2E3C1E6AAF /* main.swift */,
 				85F22F257C2E1629AE6BB8DE70E20967 /* Assets.xcassets */,
 			);
+			name = MKVPlayer;
 			path = MKVPlayer;
 			sourceTree = "<group>";
 		};
@@ -289,11 +292,13 @@
 				Base,
 			);
 			mainGroup = 63CF71AC6881C0409C6702A2AFF1938E;
+			minimizedProjectReferenceProxies = 0;
 			packageReferences = (
-				6DC501471E22256D000667F1A51B4350 /* XCLocalSwiftPackageReference "Packages/PlayerCore" */,
-				E1032CA9E4695D51495BBA7295B23F62 /* XCLocalSwiftPackageReference "Packages/MPVKit" */,
+				6DC501471E22256D000667F1A51B4350 /* XCLocalSwiftPackageReference "PlayerCore" */,
+				E1032CA9E4695D51495BBA7295B23F62 /* XCLocalSwiftPackageReference "MPVKit" */,
 				E8FCF6E91A2B765F516F00218F98E8BB /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = C61B5F1B83F21D526B4A3EC48BAB38FB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -390,10 +395,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = App/MKVPlayer/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.youssefsz.MKVPlayer;
@@ -419,10 +421,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = App/MKVPlayer/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.youssefsz.MKVPlayer;
@@ -621,11 +620,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		6DC501471E22256D000667F1A51B4350 /* XCLocalSwiftPackageReference "Packages/PlayerCore" */ = {
+		6DC501471E22256D000667F1A51B4350 /* XCLocalSwiftPackageReference "PlayerCore" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/PlayerCore;
 		};
-		E1032CA9E4695D51495BBA7295B23F62 /* XCLocalSwiftPackageReference "Packages/MPVKit" */ = {
+		E1032CA9E4695D51495BBA7295B23F62 /* XCLocalSwiftPackageReference "MPVKit" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/MPVKit;
 		};
@@ -645,7 +644,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		06FD3122B04446DC0A76BB7A13A3BBCF /* PlayerCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6DC501471E22256D000667F1A51B4350 /* XCLocalSwiftPackageReference "Packages/PlayerCore" */;
+			package = 6DC501471E22256D000667F1A51B4350 /* XCLocalSwiftPackageReference "PlayerCore" */;
 			productName = PlayerCore;
 		};
 		24C835C4DE5DC1616AA2A1B34B8EAEBB /* Sparkle */ = {
@@ -655,17 +654,17 @@
 		};
 		A6D5DE66EBB373A7E9F3F8E3697AFF94 /* PlayerCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6DC501471E22256D000667F1A51B4350 /* XCLocalSwiftPackageReference "Packages/PlayerCore" */;
+			package = 6DC501471E22256D000667F1A51B4350 /* XCLocalSwiftPackageReference "PlayerCore" */;
 			productName = PlayerCore;
 		};
 		D481E7F90B58734152A67EB8392D1065 /* MPVKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E1032CA9E4695D51495BBA7295B23F62 /* XCLocalSwiftPackageReference "Packages/MPVKit" */;
+			package = E1032CA9E4695D51495BBA7295B23F62 /* XCLocalSwiftPackageReference "MPVKit" */;
 			productName = MPVKit;
 		};
 		D8BC590CB9F2B8282DA43A3566A3FD9A /* MPVKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E1032CA9E4695D51495BBA7295B23F62 /* XCLocalSwiftPackageReference "Packages/MPVKit" */;
+			package = E1032CA9E4695D51495BBA7295B23F62 /* XCLocalSwiftPackageReference "MPVKit" */;
 			productName = MPVKit;
 		};
 /* End XCSwiftPackageProductDependency section */

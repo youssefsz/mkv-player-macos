@@ -273,6 +273,7 @@ final class PlayerWindowController: NSWindowController {
 
     func seek(by offset: TimeInterval) {
         guard session.canSeek else { return }
+        keyboardSeekGesture.reset()
         perform { [session] in try await session.seek(by: offset) }
     }
 
@@ -296,6 +297,7 @@ final class PlayerWindowController: NSWindowController {
     }
 
     func selectChapter(_ index: Int) {
+        keyboardSeekGesture.reset()
         perform { [session] in try await session.selectChapter(index: index) }
     }
 
@@ -629,7 +631,10 @@ extension PlayerWindowController: PlayerViewControllerDelegate {
     }
     func playerViewControllerDidRequestTogglePlayback(_ controller: PlayerViewController) { togglePlayback() }
     func playerViewController(_ controller: PlayerViewController, didRequestRelativeSeek offset: TimeInterval) { seek(by: offset) }
-    func playerViewControllerDidBeginScrubbing(_ controller: PlayerViewController) { session.beginScrubbing() }
+    func playerViewControllerDidBeginScrubbing(_ controller: PlayerViewController) {
+        keyboardSeekGesture.reset()
+        session.beginScrubbing()
+    }
     func playerViewController(_ controller: PlayerViewController, didUpdateScrubbing position: TimeInterval) { session.updateScrubPosition(position) }
     func playerViewControllerDidCommitScrubbing(_ controller: PlayerViewController) {
         perform { [session] in try await session.commitScrubbing() }
@@ -644,6 +649,7 @@ extension PlayerWindowController: PlayerViewControllerDelegate {
     func playerViewController(_ controller: PlayerViewController, didSelectChapter index: Int) { selectChapter(index) }
     func playerViewControllerDidRequestFullScreen(_ controller: PlayerViewController) { toggleFullScreen() }
     func playerViewControllerDidRequestRestart(_ controller: PlayerViewController) {
+        keyboardSeekGesture.reset()
         perform { [session] in try await session.restartFromBeginning() }
     }
     func playerViewControllerDidRequestReplay(_ controller: PlayerViewController) {
