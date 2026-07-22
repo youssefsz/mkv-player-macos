@@ -36,6 +36,7 @@ final class PlayerWindowController: NSWindowController {
     private var preferredMuted = false
     private var preferredVideoScaling: VideoScalingMode = .fit
     private var isTemporaryFastPlaybackActive = false
+    private var keyboardSeekGesture = KeyboardSeekGesture()
     private var playbackQueue: [PlaybackQueueItem] = []
     private var currentQueueIndex: Int?
     private var activeQueueLoadID: UUID?
@@ -154,6 +155,7 @@ final class PlayerWindowController: NSWindowController {
         currentQueueIndex = index
 
         recoverableCommandError = nil
+        keyboardSeekGesture.reset()
         playerViewController.prepareForMediaReplacement()
         if isTemporaryFastPlaybackActive {
             isTemporaryFastPlaybackActive = false
@@ -271,6 +273,7 @@ final class PlayerWindowController: NSWindowController {
 
     func seek(by offset: TimeInterval) {
         guard session.canSeek else { return }
+        keyboardSeekGesture.reset()
         perform { [session] in try await session.seek(by: offset) }
     }
 
@@ -294,6 +297,7 @@ final class PlayerWindowController: NSWindowController {
     }
 
     func selectChapter(_ index: Int) {
+        keyboardSeekGesture.reset()
         perform { [session] in try await session.selectChapter(index: index) }
     }
 
@@ -594,11 +598,14 @@ extension PlayerWindowController: PlayerWindowKeyboardDelegate {
     func playerWindowDidRequestControls() { playerViewController.showControls() }
     func playerWindowDidRequestTogglePlayback() { togglePlayback() }
     func playerWindowDidRequestSeek(by offset: TimeInterval) {
-        guard let target = presentationState.seekTarget(by: offset) else { return }
-        let appliedOffset = target - presentationState.position
-        guard appliedOffset != 0 else { return }
-        playerViewController.showKeyboardSeekFeedback(offset: appliedOffset)
-        perform { [session] in try await session.seek(to: target) }
+        guard presentationState.canSeek else { return }
+        guard let result = keyboardSeekGesture.apply(
+            step: offset,
+            position: presentationState.position,
+            duration: presentationState.duration
+        ) else { return }
+        playerViewController.showKeyboardSeekFeedback(offset: result.displayedOffset)
+        perform { [session] in try await session.seek(to: result.target) }
     }
     func playerWindowDidBeginTemporaryFastPlayback() { beginTemporaryFastPlayback() }
     func playerWindowDidEndTemporaryFastPlayback() { endTemporaryFastPlayback() }
@@ -624,7 +631,10 @@ extension PlayerWindowController: PlayerViewControllerDelegate {
     }
     func playerViewControllerDidRequestTogglePlayback(_ controller: PlayerViewController) { togglePlayback() }
     func playerViewController(_ controller: PlayerViewController, didRequestRelativeSeek offset: TimeInterval) { seek(by: offset) }
-    func playerViewControllerDidBeginScrubbing(_ controller: PlayerViewController) { session.beginScrubbing() }
+    func playerViewControllerDidBeginScrubbing(_ controller: PlayerViewController) {
+        keyboardSeekGesture.reset()
+        session.beginScrubbing()
+    }
     func playerViewController(_ controller: PlayerViewController, didUpdateScrubbing position: TimeInterval) { session.updateScrubPosition(position) }
     func playerViewControllerDidCommitScrubbing(_ controller: PlayerViewController) {
         perform { [session] in try await session.commitScrubbing() }
@@ -639,6 +649,7 @@ extension PlayerWindowController: PlayerViewControllerDelegate {
     func playerViewController(_ controller: PlayerViewController, didSelectChapter index: Int) { selectChapter(index) }
     func playerViewControllerDidRequestFullScreen(_ controller: PlayerViewController) { toggleFullScreen() }
     func playerViewControllerDidRequestRestart(_ controller: PlayerViewController) {
+        keyboardSeekGesture.reset()
         perform { [session] in try await session.restartFromBeginning() }
     }
     func playerViewControllerDidRequestReplay(_ controller: PlayerViewController) {

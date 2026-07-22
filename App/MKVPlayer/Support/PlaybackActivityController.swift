@@ -7,7 +7,7 @@ final class PlaybackActivityController {
     func setPlaying(_ isPlaying: Bool) {
         if isPlaying, activity == nil {
             activity = ProcessInfo.processInfo.beginActivity(
-                options: [.userInitiated, .idleSystemSleepDisabled],
+                options: [.userInitiated, .idleSystemSleepDisabled, .idleDisplaySleepDisabled],
                 reason: "Playing video"
             )
         } else if !isPlaying, let activity {

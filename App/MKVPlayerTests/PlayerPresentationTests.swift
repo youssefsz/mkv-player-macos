@@ -407,6 +407,131 @@ final class PlayerPresentationTests: XCTestCase {
         XCTAssertTrue(visibleMessages.contains("−5s"))
     }
 
+    func testKeyboardSeekGestureAccumulatesWithinWindow() {
+        var gesture = KeyboardSeekGesture()
+        let now = Date(timeIntervalSince1970: 1_000)
+
+        let first = gesture.apply(step: 5, position: 40, duration: 120, now: now)
+        XCTAssertEqual(first?.target, 45)
+        XCTAssertEqual(first?.displayedOffset, 5)
+
+        let second = gesture.apply(
+            step: 5,
+            position: 40,
+            duration: 120,
+            now: now.addingTimeInterval(0.2)
+        )
+        XCTAssertEqual(second?.target, 50)
+        XCTAssertEqual(second?.displayedOffset, 10)
+
+        let third = gesture.apply(
+            step: 5,
+            position: 41,
+            duration: 120,
+            now: now.addingTimeInterval(0.4)
+        )
+        XCTAssertEqual(third?.target, 55)
+        XCTAssertEqual(third?.displayedOffset, 15)
+    }
+
+    func testKeyboardSeekGestureResetsOnDirectionChange() {
+        var gesture = KeyboardSeekGesture()
+        let now = Date(timeIntervalSince1970: 2_000)
+
+        XCTAssertNotNil(gesture.apply(step: 5, position: 40, duration: 120, now: now))
+        XCTAssertNotNil(gesture.apply(step: 5, position: 40, duration: 120, now: now.addingTimeInterval(0.1)))
+
+        let flipped = gesture.apply(
+            step: -5,
+            position: 50,
+            duration: 120,
+            now: now.addingTimeInterval(0.2)
+        )
+        XCTAssertEqual(flipped?.target, 45)
+        XCTAssertEqual(flipped?.displayedOffset, -5)
+    }
+
+    func testKeyboardSeekGestureResetsAfterWindowExpires() {
+        var gesture = KeyboardSeekGesture()
+        let now = Date(timeIntervalSince1970: 3_000)
+
+        XCTAssertEqual(
+            gesture.apply(step: 5, position: 40, duration: 120, now: now)?.displayedOffset,
+            5
+        )
+        let secondAt = now.addingTimeInterval(0.2)
+        XCTAssertEqual(
+            gesture.apply(step: 5, position: 40, duration: 120, now: secondAt)?.displayedOffset,
+            10
+        )
+
+        let afterExpiry = gesture.apply(
+            step: 5,
+            position: 55,
+            duration: 120,
+            now: secondAt.addingTimeInterval(KeyboardSeekGesture.defaultWindow + 0.01)
+        )
+        XCTAssertEqual(afterExpiry?.target, 60)
+        XCTAssertEqual(afterExpiry?.displayedOffset, 5)
+    }
+
+    func testKeyboardSeekGestureClampsNearEnd() {
+        var gesture = KeyboardSeekGesture()
+        let now = Date(timeIntervalSince1970: 4_000)
+
+        let clamped = gesture.apply(step: 5, position: 100, duration: 103, now: now)
+        XCTAssertEqual(clamped?.target, 103)
+        XCTAssertEqual(clamped?.displayedOffset, 3)
+
+        let blocked = gesture.apply(
+            step: 5,
+            position: 100,
+            duration: 103,
+            now: now.addingTimeInterval(0.1)
+        )
+        XCTAssertNil(blocked)
+    }
+
+    func testKeyboardSeekGestureResetClearsState() {
+        var gesture = KeyboardSeekGesture()
+        let now = Date(timeIntervalSince1970: 5_000)
+
+        XCTAssertNotNil(gesture.apply(step: 5, position: 10, duration: 120, now: now))
+        gesture.reset()
+
+        let afterReset = gesture.apply(
+            step: 5,
+            position: 20,
+            duration: 120,
+            now: now.addingTimeInterval(0.1)
+        )
+        XCTAssertEqual(afterReset?.target, 25)
+        XCTAssertEqual(afterReset?.displayedOffset, 5)
+    }
+
+    func testKeyboardSeekGestureResetsBeforeNonKeyboardPositionChange() {
+        var gesture = KeyboardSeekGesture()
+        let now = Date(timeIntervalSince1970: 6_000)
+
+        // Pause at 0:20, Right Arrow → 0:25
+        let first = gesture.apply(step: 5, position: 20, duration: 120, now: now)
+        XCTAssertEqual(first?.target, 25)
+        XCTAssertEqual(first?.displayedOffset, 5)
+
+        // Forward 10 Seconds (or scrub / chapter / restart) moves to 0:35
+        gesture.reset()
+
+        // Right Arrow again within the window must start from 0:35 → 0:40
+        let afterExternalSeek = gesture.apply(
+            step: 5,
+            position: 35,
+            duration: 120,
+            now: now.addingTimeInterval(0.2)
+        )
+        XCTAssertEqual(afterExternalSeek?.target, 40)
+        XCTAssertEqual(afterExternalSeek?.displayedOffset, 5)
+    }
+
     @MainActor
     func testRecoverableErrorRemainsNonFatalAndDismissible() throws {
         let canvas = PlayerCanvasView(frame: NSRect(x: 0, y: 0, width: 800, height: 500))
