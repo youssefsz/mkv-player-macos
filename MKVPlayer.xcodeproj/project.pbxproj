@@ -3,45 +3,46 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00AB884643CF21E2C598346C5A8689A6 /* PlayerWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A006F32CF41F4DD063AADC3B15DF295F /* PlayerWindow.swift */; };
-		00C9C1AE440987EE071492257197E295 /* MPVKit in Frameworks */ = {isa = PBXBuildFile; productRef = C7A46087010CCBA2A5C131721FC7919B /* MPVKit */; };
-		067A5496B452844E7E059CA24EF29408 /* PlayerPresentationAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108C1097A2B6C7E4AC0318A1A776D7B /* PlayerPresentationAdapter.swift */; };
+		0978F6AAF10EE50E4C0161E7D4827635 /* PlayerWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B7D1DE6FAB3BA2DBDC79A67C580D8C /* PlayerWindowController.swift */; };
 		0F1ACA3D330A456991E68A062635A6EA /* PlayerCore in Frameworks */ = {isa = PBXBuildFile; productRef = A6D5DE66EBB373A7E9F3F8E3697AFF94 /* PlayerCore */; };
-		158C662004DFE7E59A23CF77CA99FF35 /* ActionControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 293E11166921F756F5EE1C64E3BB2CF6 /* ActionControls.swift */; };
+		16B1F8191DF3CE0546C7A7E3928BF0D2 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01CCE1E2865EF758D899B8542ECC21A /* SettingsWindowController.swift */; };
 		1A4FE318283EDDA397255AA51D6ECD0F /* MPVKit in Frameworks */ = {isa = PBXBuildFile; productRef = D481E7F90B58734152A67EB8392D1065 /* MPVKit */; };
-		1BD3995F89DA40A6F17832634FA09E78 /* DropOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D325035922EA40FD672D0CE039A7A456 /* DropOverlayView.swift */; };
 		21CF054C17241308F8B0666B7FC1D553 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 809A8D5E1CF772FE31A5D4F5B2502930 /* Cocoa.framework */; };
-		2FF1A437E2E055303E60E0EC7E175B58 /* AppMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDB3670C61304A107962CD516C77316 /* AppMenuController.swift */; };
-		37539E281F43EA7D27A0B6CBB53463A8 /* EndStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A26E42E11C35C81907E94610433D7A8 /* EndStateView.swift */; };
-		3C026DDD5326D116B364ABCB54BFF0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 809A8D5E1CF772FE31A5D4F5B2502930 /* Cocoa.framework */; };
-		47ACADB48FC630CCBFBA4B41F7943D1D /* PlayerPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABC7B777E70BF89FD8D330596D6791D /* PlayerPreferences.swift */; };
+		2E6B1E08175FFCB777B7A7B48FA7BB07 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CFEC2B72EB1808EAE0921DE2C3AC92 /* SettingsView.swift */; };
+		2F253307F8AC86F7C8B4012B2372E10F /* AppMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052258C2FBAAD8E9167A9F371F32A343 /* AppMenuController.swift */; };
+		34ECAEF40B5C5B2C19C60516EB88AA7E /* PlayerPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1B515923215C80DAE2F70BE00D4878 /* PlayerPreferences.swift */; };
+		35A75463107EDA59DB227ED8363C137E /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5F3BCB613B29A4BF8966D3B10B11D0 /* EmptyStateView.swift */; };
+		35BA8DA4812E1A8B4AF17EAA3F2036A8 /* PlayerCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 872A60DA8990CAFC8BA77E95A8A642E2 /* PlayerCanvasView.swift */; };
+		38E83A16CBCD32E94A05B464B142196A /* RecentFilesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 482F87734F9664C90951BEA662197C43 /* RecentFilesController.swift */; };
 		4913559726488E39636D85348B56F3CB /* MediaPlaybackIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC970F24E2FD67D6850396C0A8B94572 /* MediaPlaybackIntegrationTests.swift */; };
-		562B6CC308AFB3B4AAAC513A62FD525B /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F1670C21DA3155EA8E30F049696D42 /* PlayerViewController.swift */; };
+		4BFA61F7AC0BF2190E9CA75CB324490D /* UpdateSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D44CD1C375FB291014CFFD1C7859AF6 /* UpdateSettingsModel.swift */; };
+		4D830C83302B3DBDBC459709F54623FA /* PlayerCore in Frameworks */ = {isa = PBXBuildFile; productRef = 06FD3122B04446DC0A76BB7A13A3BBCF /* PlayerCore */; };
+		51600270607CA04F113885DFF654CB79 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 24C835C4DE5DC1616AA2A1B34B8EAEBB /* Sparkle */; };
 		571796440AB161095D89B5CB1A3CFC54 /* PlayerPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487BFDAA02CBF4580AD85566F16FBEA /* PlayerPresentationTests.swift */; };
-		5D4CEE10FA77510C0096392D22831ADC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35EAAC2281B62C6C08A6A6BA653CA82 /* AppDelegate.swift */; };
-		5F0EB52371A6B70E07E99A4D214CCF4F /* ResumeBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF1C1BF2CF023C547B46FF9785A123D /* ResumeBannerView.swift */; };
-		613F1FA0F7B652DEB2F9314937877AD2 /* ErrorStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19AC565F39F746824E6D9D6838B7F04E /* ErrorStateView.swift */; };
-		65B33E9F7A92FB41E8F1D245969B958D /* PlaybackQueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5996E3C56E4B00B3307EB88F7063A2D /* PlaybackQueueView.swift */; };
-		73C0288B2BBF1F142D42DE1D9E426DE7 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495FE7E4726EABDD8B2B8A9F516CC0B5 /* main.swift */; };
-		77F6A862EE8DA519EEA84603EE59DBB2 /* RecentFilesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B89A2741F706B7569C53CBD53C8020 /* RecentFilesController.swift */; };
-		850B0A45F60D1D3E68F3E48915BF9C4D /* PlayerWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD16166E515C85B126F501D66843AAC2 /* PlayerWindowController.swift */; };
-		8B6EBA5CE6D7E650D7EC7AB4DFADF73F /* UpdateSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BD54F346C2879E330A0B10B586B5F5 /* UpdateSettingsModel.swift */; };
-		9471C88CAF5B90201EAC6E51D0D003D1 /* MediaCore.xcframework in Embed Media Core */ = {isa = PBXBuildFile; fileRef = FFBA790D8CE80A14CCD0222922B03195 /* MediaCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		95865F5BCC4EB4F550A1D17FBA68274E /* PlayerCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB17E80AE9F569CA0C9ABAC7AE8283C2 /* PlayerCanvasView.swift */; };
-		9593BABED94420859FB9B4CB5CCF498F /* PlayerCore in Frameworks */ = {isa = PBXBuildFile; productRef = F7B78DC699A60BEE74047B021A463509 /* PlayerCore */; };
-		A3C71AC283D7B22243E8D997C4735AB9 /* PlaybackControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7141F6229880227FF6D26325CB8C7F /* PlaybackControlsView.swift */; };
-		AB1EEC2233768181FA14CC14D0B6E0D9 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5DFDE8B54E6822D21879EA93F701A3 /* SettingsWindowController.swift */; };
-		ACF036BBF37713E186EB54543F98BA50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2F261754E3D47CA74FB7033317601C2 /* Assets.xcassets */; };
-		C7256DAD06DD2793DCB2F6CCE95B6C33 /* MediaCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFBA790D8CE80A14CCD0222922B03195 /* MediaCore.xcframework */; };
-		CD2D9D60181A7E8DD75B123F82920847 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B67B10D31CCA468D7E05C898B2A3D0 /* SettingsView.swift */; };
-		E80725ED8096233F0601952CDA2E7F50 /* PlaybackActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E34AD08340487C16870E93A23B42373 /* PlaybackActivityController.swift */; };
-		EC304CB9D70E1B2B45FCE040CC488439 /* PlayerPresentationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18408A62838737205B8C5D9F3BDC0DF /* PlayerPresentationState.swift */; };
-		F11A43B9F4A52EC0A6EA82866D54A415 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF49ADEFD4C8B0CC7E426CC53C10F0E /* EmptyStateView.swift */; };
-		FFE64A8EA699B06DFB23553583A4E6FD /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = CDEEB810D3282EEBE778F10AB6554AC1 /* Sparkle */; };
+		59054D6FC87F83F695D2AACC6F2B663A /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107B0B32F5198AB07AAF1A2E3C1E6AAF /* main.swift */; };
+		612FB4C8C25E8BB3EE504C58E7867DCB /* ActionControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7DDDCDF39F401A2FF8F10D34BE5D998 /* ActionControls.swift */; };
+		6F0D67C4AB1D6DC7ECD88AFA1A87636E /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B79750489D815E60A37D43BE52FCB1 /* PlayerViewController.swift */; };
+		738085981F0A00DADDE5D4877F1E11C1 /* ErrorStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B437822EC182D8CA2A8CFE4383AF0BB /* ErrorStateView.swift */; };
+		85D9886C71151A94614B45BB5446ACEF /* DropOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CA937D069421BB10455B4560FB8CB8 /* DropOverlayView.swift */; };
+		87AFC424602640E6A9609EA9D5A54F6A /* PlaybackActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212AD1ADA22A069F7FA54B41082DD77D /* PlaybackActivityController.swift */; };
+		88FB3EE1AC71CF6A47C6003DD75B0123 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 85F22F257C2E1629AE6BB8DE70E20967 /* Assets.xcassets */; };
+		8BF9267952E8CC1736AD4281AC07822A /* PlayerPresentationAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCABD4EFB5FD951C81652C1D1CEC311E /* PlayerPresentationAdapter.swift */; };
+		97D1F374270F9F9B43983CE4DEFAD20E /* PlayerPresentationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72D62A7A4D3A315B11F7EBA30708972 /* PlayerPresentationState.swift */; };
+		A06E433E95B2F6841A62F7DEA68C023F /* ResumeBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DDB602E389A684FB12976C1C750A3B9 /* ResumeBannerView.swift */; };
+		A316B4D60D8774EC113AB66B25E668F6 /* MPVKit in Frameworks */ = {isa = PBXBuildFile; productRef = D8BC590CB9F2B8282DA43A3566A3FD9A /* MPVKit */; };
+		B0DFB6B391685C678786645FB27EFE6C /* MediaCore.xcframework in Embed Media Core */ = {isa = PBXBuildFile; fileRef = FFBA790D8CE80A14CCD0222922B03195 /* MediaCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B635A09A2E1FA8F3E70B898B8BD881BA /* PlayerWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBAA9004FD80B560F77CF7814456341A /* PlayerWindow.swift */; };
+		BDD4F6663146B9BE4CEBC876AE61F4AF /* KeyboardSeekGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03DD520248A116C4E03714BC8021F87 /* KeyboardSeekGesture.swift */; };
+		C47333ACF94A833DAE0DBA462630AE71 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 809A8D5E1CF772FE31A5D4F5B2502930 /* Cocoa.framework */; };
+		D0594F43926AD23ACD38FCA2AB0E37FB /* EndStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D72A48525B1C6D97DAECAC28F2127F /* EndStateView.swift */; };
+		DA7F1E2726B8B4E43FF77F206269314C /* MediaCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFBA790D8CE80A14CCD0222922B03195 /* MediaCore.xcframework */; };
+		EC81DBCD417E700FAABE389FE5A47E8B /* PlaybackControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88ABBD9AEE7639E1CBEE8D5BC6FD0AEB /* PlaybackControlsView.swift */; };
+		ED8408CD61446CBDEF03D88E001697D4 /* PlaybackQueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F69B394E640AEA41B136E3FAE82D96B /* PlaybackQueueView.swift */; };
+		F726981D10305CB78E8CBA626CF2E9DD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45E293274AEDB5716F76EE9BF5C3DA3 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,19 +50,19 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = C05A3344B6333BC1C1DB620B8917FC8B /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = A6AF8E344EEFB378CDA2442BF9214F52;
+			remoteGlobalIDString = 5B0B057B45BD67801395F19CA8C8FC36;
 			remoteInfo = MKVPlayer;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		F4AEA57B5BE85F1B91571196D4502A67 /* Embed Media Core */ = {
+		93D54EAC47D7789CFBCC6DB2687478E2 /* Embed Media Core */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				9471C88CAF5B90201EAC6E51D0D003D1 /* MediaCore.xcframework in Embed Media Core */,
+				B0DFB6B391685C678786645FB27EFE6C /* MediaCore.xcframework in Embed Media Core */,
 			);
 			name = "Embed Media Core";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -69,51 +70,40 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0AF1C1BF2CF023C547B46FF9785A123D /* ResumeBannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ResumeBannerView.swift; path = Views/ResumeBannerView.swift; sourceTree = "<group>"; };
-		0DDB3670C61304A107962CD516C77316 /* AppMenuController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppMenuController.swift; sourceTree = "<group>"; };
-		19AC565F39F746824E6D9D6838B7F04E /* ErrorStateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ErrorStateView.swift; path = Views/ErrorStateView.swift; sourceTree = "<group>"; };
-		1ABC7B777E70BF89FD8D330596D6791D /* PlayerPreferences.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlayerPreferences.swift; path = Support/PlayerPreferences.swift; sourceTree = "<group>"; };
-		1D5DFDE8B54E6822D21879EA93F701A3 /* SettingsWindowController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
-		293E11166921F756F5EE1C64E3BB2CF6 /* ActionControls.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ActionControls.swift; path = Views/ActionControls.swift; sourceTree = "<group>"; };
+		052258C2FBAAD8E9167A9F371F32A343 /* AppMenuController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppMenuController.swift; sourceTree = "<group>"; };
+		0C1B515923215C80DAE2F70BE00D4878 /* PlayerPreferences.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlayerPreferences.swift; path = Support/PlayerPreferences.swift; sourceTree = "<group>"; };
+		107B0B32F5198AB07AAF1A2E3C1E6AAF /* main.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		212AD1ADA22A069F7FA54B41082DD77D /* PlaybackActivityController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlaybackActivityController.swift; path = Support/PlaybackActivityController.swift; sourceTree = "<group>"; };
+		2D44CD1C375FB291014CFFD1C7859AF6 /* UpdateSettingsModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UpdateSettingsModel.swift; path = Support/UpdateSettingsModel.swift; sourceTree = "<group>"; };
 		3487BFDAA02CBF4580AD85566F16FBEA /* PlayerPresentationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlayerPresentationTests.swift; sourceTree = "<group>"; };
-		3A26E42E11C35C81907E94610433D7A8 /* EndStateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EndStateView.swift; path = Views/EndStateView.swift; sourceTree = "<group>"; };
-		495FE7E4726EABDD8B2B8A9F516CC0B5 /* main.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		51F1670C21DA3155EA8E30F049696D42 /* PlayerViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
-		5E34AD08340487C16870E93A23B42373 /* PlaybackActivityController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlaybackActivityController.swift; path = Support/PlaybackActivityController.swift; sourceTree = "<group>"; };
-		6DF49ADEFD4C8B0CC7E426CC53C10F0E /* EmptyStateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EmptyStateView.swift; path = Views/EmptyStateView.swift; sourceTree = "<group>"; };
+		482F87734F9664C90951BEA662197C43 /* RecentFilesController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RecentFilesController.swift; path = Support/RecentFilesController.swift; sourceTree = "<group>"; };
+		6B437822EC182D8CA2A8CFE4383AF0BB /* ErrorStateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ErrorStateView.swift; path = Views/ErrorStateView.swift; sourceTree = "<group>"; };
+		7DDB602E389A684FB12976C1C750A3B9 /* ResumeBannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ResumeBannerView.swift; path = Views/ResumeBannerView.swift; sourceTree = "<group>"; };
 		809A8D5E1CF772FE31A5D4F5B2502930 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
-		87B89A2741F706B7569C53CBD53C8020 /* RecentFilesController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RecentFilesController.swift; path = Support/RecentFilesController.swift; sourceTree = "<group>"; };
-		A006F32CF41F4DD063AADC3B15DF295F /* PlayerWindow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlayerWindow.swift; sourceTree = "<group>"; };
-		B108C1097A2B6C7E4AC0318A1A776D7B /* PlayerPresentationAdapter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlayerPresentationAdapter.swift; path = Support/PlayerPresentationAdapter.swift; sourceTree = "<group>"; };
-		B2F261754E3D47CA74FB7033317601C2 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Resources/Assets.xcassets; sourceTree = "<group>"; };
-		B35EAAC2281B62C6C08A6A6BA653CA82 /* AppDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B6BD54F346C2879E330A0B10B586B5F5 /* UpdateSettingsModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UpdateSettingsModel.swift; path = Support/UpdateSettingsModel.swift; sourceTree = "<group>"; };
-		BB17E80AE9F569CA0C9ABAC7AE8283C2 /* PlayerCanvasView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlayerCanvasView.swift; path = Views/PlayerCanvasView.swift; sourceTree = "<group>"; };
-		CD16166E515C85B126F501D66843AAC2 /* PlayerWindowController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlayerWindowController.swift; sourceTree = "<group>"; };
-		D325035922EA40FD672D0CE039A7A456 /* DropOverlayView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DropOverlayView.swift; path = Views/DropOverlayView.swift; sourceTree = "<group>"; };
+		85D72A48525B1C6D97DAECAC28F2127F /* EndStateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EndStateView.swift; path = Views/EndStateView.swift; sourceTree = "<group>"; };
+		85F22F257C2E1629AE6BB8DE70E20967 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Resources/Assets.xcassets; sourceTree = "<group>"; };
+		872A60DA8990CAFC8BA77E95A8A642E2 /* PlayerCanvasView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlayerCanvasView.swift; path = Views/PlayerCanvasView.swift; sourceTree = "<group>"; };
+		88ABBD9AEE7639E1CBEE8D5BC6FD0AEB /* PlaybackControlsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlaybackControlsView.swift; path = Views/PlaybackControlsView.swift; sourceTree = "<group>"; };
+		90CA937D069421BB10455B4560FB8CB8 /* DropOverlayView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DropOverlayView.swift; path = Views/DropOverlayView.swift; sourceTree = "<group>"; };
+		9F69B394E640AEA41B136E3FAE82D96B /* PlaybackQueueView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlaybackQueueView.swift; path = Views/PlaybackQueueView.swift; sourceTree = "<group>"; };
+		B6B79750489D815E60A37D43BE52FCB1 /* PlayerViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
+		C01CCE1E2865EF758D899B8542ECC21A /* SettingsWindowController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
+		C45E293274AEDB5716F76EE9BF5C3DA3 /* AppDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D3CFEC2B72EB1808EAE0921DE2C3AC92 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = Views/SettingsView.swift; sourceTree = "<group>"; };
+		D7DDDCDF39F401A2FF8F10D34BE5D998 /* ActionControls.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ActionControls.swift; path = Views/ActionControls.swift; sourceTree = "<group>"; };
 		DC970F24E2FD67D6850396C0A8B94572 /* MediaPlaybackIntegrationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MediaPlaybackIntegrationTests.swift; sourceTree = "<group>"; };
-		E4B67B10D31CCA468D7E05C898B2A3D0 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = Views/SettingsView.swift; sourceTree = "<group>"; };
-		E5996E3C56E4B00B3307EB88F7063A2D /* PlaybackQueueView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlaybackQueueView.swift; path = Views/PlaybackQueueView.swift; sourceTree = "<group>"; };
-		EB48258B233EBE9D08DBCFC219C7BA4A /* MKV Player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "MKV Player.app"; path = "MKV Player.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		EB7141F6229880227FF6D26325CB8C7F /* PlaybackControlsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlaybackControlsView.swift; path = Views/PlaybackControlsView.swift; sourceTree = "<group>"; };
+		DCABD4EFB5FD951C81652C1D1CEC311E /* PlayerPresentationAdapter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlayerPresentationAdapter.swift; path = Support/PlayerPresentationAdapter.swift; sourceTree = "<group>"; };
+		EB48258B233EBE9D08DBCFC219C7BA4A /* MKV Player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MKV Player.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF7C79C49BA4712E807218819A53F865 /* MKVPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MKVPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F18408A62838737205B8C5D9F3BDC0DF /* PlayerPresentationState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlayerPresentationState.swift; path = Support/PlayerPresentationState.swift; sourceTree = "<group>"; };
-		FFBA790D8CE80A14CCD0222922B03195 /* MediaCore.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; path = MediaCore.xcframework; sourceTree = "<group>"; };
+		F03DD520248A116C4E03714BC8021F87 /* KeyboardSeekGesture.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = KeyboardSeekGesture.swift; path = Support/KeyboardSeekGesture.swift; sourceTree = "<group>"; };
+		F6B7D1DE6FAB3BA2DBDC79A67C580D8C /* PlayerWindowController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlayerWindowController.swift; sourceTree = "<group>"; };
+		F72D62A7A4D3A315B11F7EBA30708972 /* PlayerPresentationState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PlayerPresentationState.swift; path = Support/PlayerPresentationState.swift; sourceTree = "<group>"; };
+		FB5F3BCB613B29A4BF8966D3B10B11D0 /* EmptyStateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EmptyStateView.swift; path = Views/EmptyStateView.swift; sourceTree = "<group>"; };
+		FBAA9004FD80B560F77CF7814456341A /* PlayerWindow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlayerWindow.swift; sourceTree = "<group>"; };
+		FFBA790D8CE80A14CCD0222922B03195 /* MediaCore.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.xcframework; path = MediaCore.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		B35F430A71B53D9DB15BE2DC9CFD5297 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3C026DDD5326D116B364ABCB54BFF0EE /* Cocoa.framework in Frameworks */,
-				9593BABED94420859FB9B4CB5CCF498F /* PlayerCore in Frameworks */,
-				00C9C1AE440987EE071492257197E295 /* MPVKit in Frameworks */,
-				FFE64A8EA699B06DFB23553583A4E6FD /* Sparkle in Frameworks */,
-				C7256DAD06DD2793DCB2F6CCE95B6C33 /* MediaCore.xcframework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		E090EC407A3CE6DB5E0B64AC3697A44A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -121,6 +111,18 @@
 				21CF054C17241308F8B0666B7FC1D553 /* Cocoa.framework in Frameworks */,
 				0F1ACA3D330A456991E68A062635A6EA /* PlayerCore in Frameworks */,
 				1A4FE318283EDDA397255AA51D6ECD0F /* MPVKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F96AACD87A85E38FFBA8F6EC19D88D04 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C47333ACF94A833DAE0DBA462630AE71 /* Cocoa.framework in Frameworks */,
+				4D830C83302B3DBDBC459709F54623FA /* PlayerCore in Frameworks */,
+				A316B4D60D8774EC113AB66B25E668F6 /* MPVKit in Frameworks */,
+				51600270607CA04F113885DFF654CB79 /* Sparkle in Frameworks */,
+				DA7F1E2726B8B4E43FF77F206269314C /* MediaCore.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,47 +147,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		4615AD0C501085BD0AB9E64B5029EC3A /* MKVPlayer */ = {
-			isa = PBXGroup;
-			children = (
-				B35EAAC2281B62C6C08A6A6BA653CA82 /* AppDelegate.swift */,
-				0DDB3670C61304A107962CD516C77316 /* AppMenuController.swift */,
-				51F1670C21DA3155EA8E30F049696D42 /* PlayerViewController.swift */,
-				A006F32CF41F4DD063AADC3B15DF295F /* PlayerWindow.swift */,
-				CD16166E515C85B126F501D66843AAC2 /* PlayerWindowController.swift */,
-				1D5DFDE8B54E6822D21879EA93F701A3 /* SettingsWindowController.swift */,
-				5E34AD08340487C16870E93A23B42373 /* PlaybackActivityController.swift */,
-				1ABC7B777E70BF89FD8D330596D6791D /* PlayerPreferences.swift */,
-				B108C1097A2B6C7E4AC0318A1A776D7B /* PlayerPresentationAdapter.swift */,
-				F18408A62838737205B8C5D9F3BDC0DF /* PlayerPresentationState.swift */,
-				87B89A2741F706B7569C53CBD53C8020 /* RecentFilesController.swift */,
-				B6BD54F346C2879E330A0B10B586B5F5 /* UpdateSettingsModel.swift */,
-				293E11166921F756F5EE1C64E3BB2CF6 /* ActionControls.swift */,
-				D325035922EA40FD672D0CE039A7A456 /* DropOverlayView.swift */,
-				6DF49ADEFD4C8B0CC7E426CC53C10F0E /* EmptyStateView.swift */,
-				3A26E42E11C35C81907E94610433D7A8 /* EndStateView.swift */,
-				19AC565F39F746824E6D9D6838B7F04E /* ErrorStateView.swift */,
-				EB7141F6229880227FF6D26325CB8C7F /* PlaybackControlsView.swift */,
-				E5996E3C56E4B00B3307EB88F7063A2D /* PlaybackQueueView.swift */,
-				BB17E80AE9F569CA0C9ABAC7AE8283C2 /* PlayerCanvasView.swift */,
-				0AF1C1BF2CF023C547B46FF9785A123D /* ResumeBannerView.swift */,
-				E4B67B10D31CCA468D7E05C898B2A3D0 /* SettingsView.swift */,
-				495FE7E4726EABDD8B2B8A9F516CC0B5 /* main.swift */,
-				B2F261754E3D47CA74FB7033317601C2 /* Assets.xcassets */,
-			);
-			name = MKVPlayer;
-			path = MKVPlayer;
-			sourceTree = "<group>";
-		};
 		63CF71AC6881C0409C6702A2AFF1938E = {
 			isa = PBXGroup;
 			children = (
 				C61B5F1B83F21D526B4A3EC48BAB38FB /* Products */,
 				42BBD1A224E9155564DDDF04CAFA6A2A /* Frameworks */,
-				9F640C714A43A1A9D0FDF0F55F4D3AB9 /* App */,
+				7326466BABA1CB4D1C3790C23183EAA3 /* App */,
 				28EFC0BB423481E7A186980C722814A1 /* MKVPlayerTests */,
 				DF34809F7A2ADDE6BDCEE8A9B29884AA /* Vendor */,
 			);
+			sourceTree = "<group>";
+		};
+		7326466BABA1CB4D1C3790C23183EAA3 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				E3BD4E44A9DBB8ADE8D4BDABB8DBF1E4 /* MKVPlayer */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 		785EF57798AF8006A685B4E294AB6EA4 /* OS X */ = {
@@ -194,15 +172,6 @@
 				809A8D5E1CF772FE31A5D4F5B2502930 /* Cocoa.framework */,
 			);
 			name = "OS X";
-			sourceTree = "<group>";
-		};
-		9F640C714A43A1A9D0FDF0F55F4D3AB9 /* App */ = {
-			isa = PBXGroup;
-			children = (
-				4615AD0C501085BD0AB9E64B5029EC3A /* MKVPlayer */,
-			);
-			name = App;
-			path = App;
 			sourceTree = "<group>";
 		};
 		C61B5F1B83F21D526B4A3EC48BAB38FB /* Products */ = {
@@ -219,13 +188,67 @@
 			children = (
 				FFBA790D8CE80A14CCD0222922B03195 /* MediaCore.xcframework */,
 			);
-			name = Vendor;
 			path = Vendor;
+			sourceTree = "<group>";
+		};
+		E3BD4E44A9DBB8ADE8D4BDABB8DBF1E4 /* MKVPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				C45E293274AEDB5716F76EE9BF5C3DA3 /* AppDelegate.swift */,
+				052258C2FBAAD8E9167A9F371F32A343 /* AppMenuController.swift */,
+				B6B79750489D815E60A37D43BE52FCB1 /* PlayerViewController.swift */,
+				FBAA9004FD80B560F77CF7814456341A /* PlayerWindow.swift */,
+				F6B7D1DE6FAB3BA2DBDC79A67C580D8C /* PlayerWindowController.swift */,
+				C01CCE1E2865EF758D899B8542ECC21A /* SettingsWindowController.swift */,
+				F03DD520248A116C4E03714BC8021F87 /* KeyboardSeekGesture.swift */,
+				212AD1ADA22A069F7FA54B41082DD77D /* PlaybackActivityController.swift */,
+				0C1B515923215C80DAE2F70BE00D4878 /* PlayerPreferences.swift */,
+				DCABD4EFB5FD951C81652C1D1CEC311E /* PlayerPresentationAdapter.swift */,
+				F72D62A7A4D3A315B11F7EBA30708972 /* PlayerPresentationState.swift */,
+				482F87734F9664C90951BEA662197C43 /* RecentFilesController.swift */,
+				2D44CD1C375FB291014CFFD1C7859AF6 /* UpdateSettingsModel.swift */,
+				D7DDDCDF39F401A2FF8F10D34BE5D998 /* ActionControls.swift */,
+				90CA937D069421BB10455B4560FB8CB8 /* DropOverlayView.swift */,
+				FB5F3BCB613B29A4BF8966D3B10B11D0 /* EmptyStateView.swift */,
+				85D72A48525B1C6D97DAECAC28F2127F /* EndStateView.swift */,
+				6B437822EC182D8CA2A8CFE4383AF0BB /* ErrorStateView.swift */,
+				88ABBD9AEE7639E1CBEE8D5BC6FD0AEB /* PlaybackControlsView.swift */,
+				9F69B394E640AEA41B136E3FAE82D96B /* PlaybackQueueView.swift */,
+				872A60DA8990CAFC8BA77E95A8A642E2 /* PlayerCanvasView.swift */,
+				7DDB602E389A684FB12976C1C750A3B9 /* ResumeBannerView.swift */,
+				D3CFEC2B72EB1808EAE0921DE2C3AC92 /* SettingsView.swift */,
+				107B0B32F5198AB07AAF1A2E3C1E6AAF /* main.swift */,
+				85F22F257C2E1629AE6BB8DE70E20967 /* Assets.xcassets */,
+			);
+			path = MKVPlayer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		5B0B057B45BD67801395F19CA8C8FC36 /* MKVPlayer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A39DB99FB99EA880E6A1B5A103FD9A2 /* Build configuration list for PBXNativeTarget "MKVPlayer" */;
+			buildPhases = (
+				C102CD42B36DB3E7F109666C6CE18D0B /* Sources */,
+				F96AACD87A85E38FFBA8F6EC19D88D04 /* Frameworks */,
+				A1843C0D0089FCF2429E70BAD43A9C7C /* Resources */,
+				93D54EAC47D7789CFBCC6DB2687478E2 /* Embed Media Core */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MKVPlayer;
+			packageProductDependencies = (
+				06FD3122B04446DC0A76BB7A13A3BBCF /* PlayerCore */,
+				D8BC590CB9F2B8282DA43A3566A3FD9A /* MPVKit */,
+				24C835C4DE5DC1616AA2A1B34B8EAEBB /* Sparkle */,
+			);
+			productName = MKVPlayer;
+			productReference = EB48258B233EBE9D08DBCFC219C7BA4A /* MKV Player.app */;
+			productType = "com.apple.product-type.application";
+		};
 		76E5FB4EF0BAE307EDEFB5B26C32FDF4 /* MKVPlayerTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 989E5D135D7C6177C2403FDE8E985C43 /* Build configuration list for PBXNativeTarget "MKVPlayerTests" */;
@@ -248,29 +271,6 @@
 			productReference = EF7C79C49BA4712E807218819A53F865 /* MKVPlayerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A6AF8E344EEFB378CDA2442BF9214F52 /* MKVPlayer */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A6C43560621426BFE0C6AC4E57603394 /* Build configuration list for PBXNativeTarget "MKVPlayer" */;
-			buildPhases = (
-				861249469CAC7982C904B46A783B1D6A /* Sources */,
-				B35F430A71B53D9DB15BE2DC9CFD5297 /* Frameworks */,
-				1FA9727453675CC90EB877664E83940C /* Resources */,
-				F4AEA57B5BE85F1B91571196D4502A67 /* Embed Media Core */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = MKVPlayer;
-			packageProductDependencies = (
-				F7B78DC699A60BEE74047B021A463509 /* PlayerCore */,
-				C7A46087010CCBA2A5C131721FC7919B /* MPVKit */,
-				CDEEB810D3282EEBE778F10AB6554AC1 /* Sparkle */,
-			);
-			productName = MKVPlayer;
-			productReference = EB48258B233EBE9D08DBCFC219C7BA4A /* MKV Player.app */;
-			productType = "com.apple.product-type.application";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -289,18 +289,16 @@
 				Base,
 			);
 			mainGroup = 63CF71AC6881C0409C6702A2AFF1938E;
-			minimizedProjectReferenceProxies = 0;
 			packageReferences = (
-				729985B1105DE853929A65D1EC88D519 /* XCLocalSwiftPackageReference "PlayerCore" */,
-				45C19484A2B17E7C82AC2349F784F485 /* XCLocalSwiftPackageReference "MPVKit" */,
-				88D14BF9ACB64882CAF1C78AA3497EB9 /* XCRemoteSwiftPackageReference "Sparkle" */,
+				6DC501471E22256D000667F1A51B4350 /* XCLocalSwiftPackageReference "Packages/PlayerCore" */,
+				E1032CA9E4695D51495BBA7295B23F62 /* XCLocalSwiftPackageReference "Packages/MPVKit" */,
+				E8FCF6E91A2B765F516F00218F98E8BB /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
-			preferredProjectObjectVersion = 77;
 			productRefGroup = C61B5F1B83F21D526B4A3EC48BAB38FB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A6AF8E344EEFB378CDA2442BF9214F52 /* MKVPlayer */,
+				5B0B057B45BD67801395F19CA8C8FC36 /* MKVPlayer */,
 				76E5FB4EF0BAE307EDEFB5B26C32FDF4 /* MKVPlayerTests */,
 			);
 		};
@@ -314,47 +312,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1FA9727453675CC90EB877664E83940C /* Resources */ = {
+		A1843C0D0089FCF2429E70BAD43A9C7C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ACF036BBF37713E186EB54543F98BA50 /* Assets.xcassets in Resources */,
+				88FB3EE1AC71CF6A47C6003DD75B0123 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		861249469CAC7982C904B46A783B1D6A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5D4CEE10FA77510C0096392D22831ADC /* AppDelegate.swift in Sources */,
-				2FF1A437E2E055303E60E0EC7E175B58 /* AppMenuController.swift in Sources */,
-				562B6CC308AFB3B4AAAC513A62FD525B /* PlayerViewController.swift in Sources */,
-				00AB884643CF21E2C598346C5A8689A6 /* PlayerWindow.swift in Sources */,
-				850B0A45F60D1D3E68F3E48915BF9C4D /* PlayerWindowController.swift in Sources */,
-				AB1EEC2233768181FA14CC14D0B6E0D9 /* SettingsWindowController.swift in Sources */,
-				E80725ED8096233F0601952CDA2E7F50 /* PlaybackActivityController.swift in Sources */,
-				47ACADB48FC630CCBFBA4B41F7943D1D /* PlayerPreferences.swift in Sources */,
-				067A5496B452844E7E059CA24EF29408 /* PlayerPresentationAdapter.swift in Sources */,
-				EC304CB9D70E1B2B45FCE040CC488439 /* PlayerPresentationState.swift in Sources */,
-				77F6A862EE8DA519EEA84603EE59DBB2 /* RecentFilesController.swift in Sources */,
-				8B6EBA5CE6D7E650D7EC7AB4DFADF73F /* UpdateSettingsModel.swift in Sources */,
-				158C662004DFE7E59A23CF77CA99FF35 /* ActionControls.swift in Sources */,
-				1BD3995F89DA40A6F17832634FA09E78 /* DropOverlayView.swift in Sources */,
-				F11A43B9F4A52EC0A6EA82866D54A415 /* EmptyStateView.swift in Sources */,
-				37539E281F43EA7D27A0B6CBB53463A8 /* EndStateView.swift in Sources */,
-				613F1FA0F7B652DEB2F9314937877AD2 /* ErrorStateView.swift in Sources */,
-				A3C71AC283D7B22243E8D997C4735AB9 /* PlaybackControlsView.swift in Sources */,
-				65B33E9F7A92FB41E8F1D245969B958D /* PlaybackQueueView.swift in Sources */,
-				95865F5BCC4EB4F550A1D17FBA68274E /* PlayerCanvasView.swift in Sources */,
-				5F0EB52371A6B70E07E99A4D214CCF4F /* ResumeBannerView.swift in Sources */,
-				CD2D9D60181A7E8DD75B123F82920847 /* SettingsView.swift in Sources */,
-				73C0288B2BBF1F142D42DE1D9E426DE7 /* main.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B0886E32042EBBC1E05B5AF4978565DA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -364,19 +332,50 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C102CD42B36DB3E7F109666C6CE18D0B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F726981D10305CB78E8CBA626CF2E9DD /* AppDelegate.swift in Sources */,
+				2F253307F8AC86F7C8B4012B2372E10F /* AppMenuController.swift in Sources */,
+				6F0D67C4AB1D6DC7ECD88AFA1A87636E /* PlayerViewController.swift in Sources */,
+				B635A09A2E1FA8F3E70B898B8BD881BA /* PlayerWindow.swift in Sources */,
+				0978F6AAF10EE50E4C0161E7D4827635 /* PlayerWindowController.swift in Sources */,
+				16B1F8191DF3CE0546C7A7E3928BF0D2 /* SettingsWindowController.swift in Sources */,
+				BDD4F6663146B9BE4CEBC876AE61F4AF /* KeyboardSeekGesture.swift in Sources */,
+				87AFC424602640E6A9609EA9D5A54F6A /* PlaybackActivityController.swift in Sources */,
+				34ECAEF40B5C5B2C19C60516EB88AA7E /* PlayerPreferences.swift in Sources */,
+				8BF9267952E8CC1736AD4281AC07822A /* PlayerPresentationAdapter.swift in Sources */,
+				97D1F374270F9F9B43983CE4DEFAD20E /* PlayerPresentationState.swift in Sources */,
+				38E83A16CBCD32E94A05B464B142196A /* RecentFilesController.swift in Sources */,
+				4BFA61F7AC0BF2190E9CA75CB324490D /* UpdateSettingsModel.swift in Sources */,
+				612FB4C8C25E8BB3EE504C58E7867DCB /* ActionControls.swift in Sources */,
+				85D9886C71151A94614B45BB5446ACEF /* DropOverlayView.swift in Sources */,
+				35A75463107EDA59DB227ED8363C137E /* EmptyStateView.swift in Sources */,
+				D0594F43926AD23ACD38FCA2AB0E37FB /* EndStateView.swift in Sources */,
+				738085981F0A00DADDE5D4877F1E11C1 /* ErrorStateView.swift in Sources */,
+				EC81DBCD417E700FAABE389FE5A47E8B /* PlaybackControlsView.swift in Sources */,
+				ED8408CD61446CBDEF03D88E001697D4 /* PlaybackQueueView.swift in Sources */,
+				35BA8DA4812E1A8B4AF17EAA3F2036A8 /* PlayerCanvasView.swift in Sources */,
+				A06E433E95B2F6841A62F7DEA68C023F /* ResumeBannerView.swift in Sources */,
+				2E6B1E08175FFCB777B7A7B48FA7BB07 /* SettingsView.swift in Sources */,
+				59054D6FC87F83F695D2AACC6F2B663A /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
 		1F943489B87ACE97D3C8E479BE668949 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = MKVPlayer;
-			target = A6AF8E344EEFB378CDA2442BF9214F52 /* MKVPlayer */;
+			target = 5B0B057B45BD67801395F19CA8C8FC36 /* MKVPlayer */;
 			targetProxy = 6D709CC12B5660CA888EC8B935BDC456 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		66E5DC9D16AD597DA16AB8764DFEAF90 /* Release */ = {
+		4916034A6B7EC54338AC055AB7E43D5D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
@@ -391,7 +390,10 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = App/MKVPlayer/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.youssefsz.MKVPlayer;
@@ -401,6 +403,35 @@
 				SWIFT_STRICT_CONCURRENCY = complete;
 			};
 			name = Release;
+		};
+		5C3AD4D4047DA07F87B3DD7D11434768 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = App/MKVPlayer/MKVPlayer.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/MKVPlayer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.youssefsz.MKVPlayer;
+				PRODUCT_NAME = "MKV Player";
+				SDKROOT = macosx;
+				SPARKLE_PUBLIC_ED_KEY = "";
+				SWIFT_STRICT_CONCURRENCY = complete;
+			};
+			name = Debug;
 		};
 		94FCE409393A7744311B27A2841D1E2E /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -480,32 +511,6 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) $(MKVPLAYER_TEST_COMPILATION_CONDITION)";
 				SWIFT_STRICT_CONCURRENCY = complete;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MKV Player.app/Contents/MacOS/MKV Player";
-			};
-			name = Debug;
-		};
-		BE986B442C388E572823BAECAFB945F8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = App/MKVPlayer/MKVPlayer.entitlements;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				ENABLE_APP_SANDBOX = YES;
-				ENABLE_HARDENED_RUNTIME = NO;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = App/MKVPlayer/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.github.youssefsz.MKVPlayer;
-				PRODUCT_NAME = "MKV Player";
-				SDKROOT = macosx;
-				SPARKLE_PUBLIC_ED_KEY = "";
-				SWIFT_STRICT_CONCURRENCY = complete;
 			};
 			name = Debug;
 		};
@@ -595,6 +600,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		7A39DB99FB99EA880E6A1B5A103FD9A2 /* Build configuration list for PBXNativeTarget "MKVPlayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4916034A6B7EC54338AC055AB7E43D5D /* Release */,
+				5C3AD4D4047DA07F87B3DD7D11434768 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		989E5D135D7C6177C2403FDE8E985C43 /* Build configuration list for PBXNativeTarget "MKVPlayerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -604,30 +618,21 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A6C43560621426BFE0C6AC4E57603394 /* Build configuration list for PBXNativeTarget "MKVPlayer" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				66E5DC9D16AD597DA16AB8764DFEAF90 /* Release */,
-				BE986B442C388E572823BAECAFB945F8 /* Debug */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		45C19484A2B17E7C82AC2349F784F485 /* XCLocalSwiftPackageReference "MPVKit" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/MPVKit;
-		};
-		729985B1105DE853929A65D1EC88D519 /* XCLocalSwiftPackageReference "PlayerCore" */ = {
+		6DC501471E22256D000667F1A51B4350 /* XCLocalSwiftPackageReference "Packages/PlayerCore" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/PlayerCore;
+		};
+		E1032CA9E4695D51495BBA7295B23F62 /* XCLocalSwiftPackageReference "Packages/MPVKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/MPVKit;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		88D14BF9ACB64882CAF1C78AA3497EB9 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+		E8FCF6E91A2B765F516F00218F98E8BB /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
 			requirement = {
@@ -638,30 +643,30 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A6D5DE66EBB373A7E9F3F8E3697AFF94 /* PlayerCore */ = {
+		06FD3122B04446DC0A76BB7A13A3BBCF /* PlayerCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 729985B1105DE853929A65D1EC88D519 /* XCLocalSwiftPackageReference "PlayerCore" */;
+			package = 6DC501471E22256D000667F1A51B4350 /* XCLocalSwiftPackageReference "Packages/PlayerCore" */;
 			productName = PlayerCore;
 		};
-		C7A46087010CCBA2A5C131721FC7919B /* MPVKit */ = {
+		24C835C4DE5DC1616AA2A1B34B8EAEBB /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 45C19484A2B17E7C82AC2349F784F485 /* XCLocalSwiftPackageReference "MPVKit" */;
-			productName = MPVKit;
-		};
-		CDEEB810D3282EEBE778F10AB6554AC1 /* Sparkle */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 88D14BF9ACB64882CAF1C78AA3497EB9 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			package = E8FCF6E91A2B765F516F00218F98E8BB /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
+		};
+		A6D5DE66EBB373A7E9F3F8E3697AFF94 /* PlayerCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6DC501471E22256D000667F1A51B4350 /* XCLocalSwiftPackageReference "Packages/PlayerCore" */;
+			productName = PlayerCore;
 		};
 		D481E7F90B58734152A67EB8392D1065 /* MPVKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 45C19484A2B17E7C82AC2349F784F485 /* XCLocalSwiftPackageReference "MPVKit" */;
+			package = E1032CA9E4695D51495BBA7295B23F62 /* XCLocalSwiftPackageReference "Packages/MPVKit" */;
 			productName = MPVKit;
 		};
-		F7B78DC699A60BEE74047B021A463509 /* PlayerCore */ = {
+		D8BC590CB9F2B8282DA43A3566A3FD9A /* MPVKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 729985B1105DE853929A65D1EC88D519 /* XCLocalSwiftPackageReference "PlayerCore" */;
-			productName = PlayerCore;
+			package = E1032CA9E4695D51495BBA7295B23F62 /* XCLocalSwiftPackageReference "Packages/MPVKit" */;
+			productName = MPVKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

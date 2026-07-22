@@ -36,6 +36,7 @@ final class PlayerWindowController: NSWindowController {
     private var preferredMuted = false
     private var preferredVideoScaling: VideoScalingMode = .fit
     private var isTemporaryFastPlaybackActive = false
+    private var keyboardSeekGesture = KeyboardSeekGesture()
     private var playbackQueue: [PlaybackQueueItem] = []
     private var currentQueueIndex: Int?
     private var activeQueueLoadID: UUID?
@@ -154,6 +155,7 @@ final class PlayerWindowController: NSWindowController {
         currentQueueIndex = index
 
         recoverableCommandError = nil
+        keyboardSeekGesture.reset()
         playerViewController.prepareForMediaReplacement()
         if isTemporaryFastPlaybackActive {
             isTemporaryFastPlaybackActive = false
@@ -594,11 +596,14 @@ extension PlayerWindowController: PlayerWindowKeyboardDelegate {
     func playerWindowDidRequestControls() { playerViewController.showControls() }
     func playerWindowDidRequestTogglePlayback() { togglePlayback() }
     func playerWindowDidRequestSeek(by offset: TimeInterval) {
-        guard let target = presentationState.seekTarget(by: offset) else { return }
-        let appliedOffset = target - presentationState.position
-        guard appliedOffset != 0 else { return }
-        playerViewController.showKeyboardSeekFeedback(offset: appliedOffset)
-        perform { [session] in try await session.seek(to: target) }
+        guard presentationState.canSeek else { return }
+        guard let result = keyboardSeekGesture.apply(
+            step: offset,
+            position: presentationState.position,
+            duration: presentationState.duration
+        ) else { return }
+        playerViewController.showKeyboardSeekFeedback(offset: result.displayedOffset)
+        perform { [session] in try await session.seek(to: result.target) }
     }
     func playerWindowDidBeginTemporaryFastPlayback() { beginTemporaryFastPlayback() }
     func playerWindowDidEndTemporaryFastPlayback() { endTemporaryFastPlayback() }
